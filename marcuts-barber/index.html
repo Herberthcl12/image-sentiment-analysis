@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&family=Rubik+Mono+One&display=swap" rel="stylesheet">
 <style>
   :root {
+    color-scheme: dark;
     --bg: #0a0a0b;
     --bg-2: #121214;
     --card: #17171a;
@@ -107,7 +108,7 @@
 
   /* ---------- nav ---------- */
   nav.tabs {
-    position: sticky; top: 0; z-index: 20;
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
     background: rgba(10,10,11,.86); backdrop-filter: blur(10px);
     border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
     margin-top: 24px;
@@ -513,7 +514,7 @@
       <div class="sec-title">
         <h2>Panel <span id="panelMonth"></span></h2>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn ghost sm" id="exportCsv">Exportar contactos CSV</button>
+          <button class="btn ghost sm" id="exportCsv">Ver contactos CSV</button>
           <button class="btn ghost sm" id="resetDemo">Reiniciar demo</button>
           <button class="btn ghost sm" id="lock">Salir</button>
         </div>
@@ -636,6 +637,26 @@
   </div>
 </div>
 
+<!-- MODAL CONFIRMAR -->
+<div class="modal" id="askModal">
+  <div class="sheet">
+    <div class="sheet-head"><div><h3 id="askTitle">¿Seguro?</h3><p id="askText"></p></div></div>
+    <div class="actions"><button class="btn ghost" data-close>Volver</button><button class="btn" id="askYes">Sí, confirmar</button></div>
+  </div>
+</div>
+
+<!-- MODAL CSV -->
+<div class="modal" id="csvModal">
+  <div class="sheet wide">
+    <div class="sheet-head">
+      <div><h3>Contactos CSV</h3><p>Copia y pega en Excel, Google Sheets o tu herramienta de email marketing.</p></div>
+      <button class="icon-btn" data-close>✕</button>
+    </div>
+    <textarea class="in" id="csvText" rows="10" readonly style="font-size:11px;white-space:pre"></textarea>
+    <div class="actions"><button class="btn ghost" data-close>Cerrar</button><button class="btn" id="copyCsv">Copiar CSV</button></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -746,6 +767,11 @@ function toast(msg) {
   clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2600);
 }
 function openModal(id) { $(id).classList.add('show'); }
+let askFn = null;
+function ask(title, text, fn) {
+  $('#askTitle').textContent = title; $('#askText').textContent = text; askFn = fn;
+  openModal('#askModal');
+}
 function closeModals() { $$('.modal').forEach(m => m.classList.remove('show')); }
 
 /* =========================================================
@@ -1020,8 +1046,9 @@ function renderMine() {
       <button class="btn ghost sm" data-cancel="${b.id}">Cancelar</button></div>`).join('')
     : `<div class="empty">No tienes horas agendadas.<br><br><button class="btn sm" data-go="reservar">Reservar ahora</button></div>`;
   $$('[data-cancel]').forEach(b => b.onclick = () => {
-    if (!confirm('¿Cancelar esta hora?')) return;
-    S.bookings = S.bookings.filter(x => x.id !== b.dataset.cancel); save(); renderAll(); toast('Hora cancelada');
+    ask('Cancelar hora', 'La hora queda libre para otro cliente.', () => {
+      S.bookings = S.bookings.filter(x => x.id !== b.dataset.cancel); save(); renderAll(); toast('Hora cancelada');
+    });
   });
   const held = Object.entries(heldList());
   $('#myHeld').innerHTML = held.length ? held.map(([id, q]) => {
@@ -1082,8 +1109,9 @@ function renderPanel() {
       : `<div class="item" style="padding:10px 14px;opacity:.45"><div class="when" style="font-size:20px">${hh(h)}</div><span class="meta">Libre</span></div>`;
   }).join('');
   $$('[data-adm-cancel]').forEach(b => b.onclick = () => {
-    if (!confirm('¿Cancelar esta reserva?')) return;
-    S.bookings = S.bookings.filter(x => x.id !== b.dataset.admCancel); save(); renderAll(); toast('Reserva cancelada');
+    ask('Cancelar reserva', 'Se libera la hora en la agenda.', () => {
+      S.bookings = S.bookings.filter(x => x.id !== b.dataset.admCancel); save(); renderAll(); toast('Reserva cancelada');
+    });
   });
 
   // mapa del mes
@@ -1116,10 +1144,8 @@ function exportCsv() {
   const rows = [['nombre','telefono','correo','visitas','acepta_terminos','marketing_email','marketing_whatsapp_sms']];
   Object.values(S.users).forEach(u => rows.push([u.name, u.phone, u.email, S.bookings.filter(b => b.email === u.email).length, 'si', u.mkEmail ? 'si' : 'no', u.mkSms ? 'si' : 'no']));
   const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
-  a.download = 'marcuts-clientes.csv'; a.click();
-  toast('CSV descargado');
+  $('#csvText').value = csv;
+  openModal('#csvModal');
 }
 
 /* =========================================================
@@ -1178,9 +1204,16 @@ function wire() {
     toast(S.open ? 'Reservas ABIERTAS' : 'Reservas CERRADAS');
   };
   $('#exportCsv').onclick = exportCsv;
+  $('#askYes').onclick = () => { $('#askModal').classList.remove('show'); const f = askFn; askFn = null; if (f) f(); };
+  $('#copyCsv').onclick = () => {
+    const t = $('#csvText');
+    const fallback = () => { t.focus(); t.select(); toast('Texto seleccionado: cópialo con Ctrl/Cmd + C'); };
+    try { navigator.clipboard.writeText(t.value).then(() => toast('CSV copiado'), fallback); } catch (e) { fallback(); }
+  };
   $('#resetDemo').onclick = () => {
-    if (!confirm('Esto borra reservas, clientes y reseñas nuevas. ¿Seguir?')) return;
-    S = seed(); save(); initSelDate(); renderAll(); toast('Demo reiniciada');
+    ask('Reiniciar demo', 'Se borran reservas, clientes y reseñas nuevas y vuelven los datos de ejemplo.', () => {
+      S = seed(); save(); initSelDate(); renderAll(); toast('Demo reiniciada');
+    });
   };
 
   ['#fName','#fPhone','#fEmail'].forEach(s => $(s).addEventListener('keydown', e => { if (e.key === 'Enter') confirmBooking(); }));
