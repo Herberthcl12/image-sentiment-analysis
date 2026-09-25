@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marcut's Barber</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&family=Rubik+Mono+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --bg-2: #121214;
+    --card: #17171a;
+    --line: #2b2b30;
+    --line-2: #3a3a41;
+    --muted: #8b8b93;
+    --text: #e9e9ec;
+    --white: #ffffff;
+    --chrome: linear-gradient(180deg, #ffffff 0%, #d8d8de 28%, #7c7c86 50%, #f4f4f7 62%, #a9a9b2 100%);
+    --radius: 14px;
+    --display: 'Anton', 'Impact', 'Arial Narrow Bold', 'Arial Black', sans-serif;
+    --mono: 'Space Mono', ui-monospace, monospace;
+    --wide: 'Rubik Mono One', 'Anton', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* grano + rejilla y2k */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: .06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  main, header, footer, nav { position: relative; z-index: 1; }
+  button { font-family: inherit; cursor: pointer; }
+  input, select, textarea { font-family: inherit; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- marquee ---------- */
+  .ticker {
+    border-bottom: 1px solid var(--line);
+    background: var(--white); color: #000;
+    overflow: hidden; white-space: nowrap;
+    font-family: var(--wide); font-size: 11px; letter-spacing: .08em;
+  }
+  .ticker span { display: inline-block; padding: 6px 0; animation: tick 28s linear infinite; }
+  @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ---------- header ---------- */
+  header { padding: 22px 0 10px; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--chrome); display: grid; place-items: center;
+    box-shadow: 0 0 0 2px #000, 0 0 0 3px var(--line-2), 0 8px 24px rgba(255,255,255,.08);
+    font-family: var(--display); color: #0a0a0b; font-size: 22px; letter-spacing: -.02em;
+  }
+  .brand small { display: block; color: var(--muted); font-size: 10px; letter-spacing: .25em; text-transform: uppercase; }
+  .brand b { font-family: var(--wide); font-size: 15px; letter-spacing: .02em; }
+  .status {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--line-2); border-radius: 999px; padding: 7px 14px;
+    font-weight: 700; font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    background: var(--bg-2); color: var(--text);
+  }
+  .status i { width: 9px; height: 9px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px #fff; animation: blink 1.6s infinite; }
+  .status.closed i { background: #55555c; box-shadow: none; animation: none; }
+  .status.closed { color: var(--muted); }
+  @keyframes blink { 50% { opacity: .35; } }
+
+  .hero { padding: 26px 0 8px; position: relative; }
+  .hero h1 {
+    font-family: var(--display); font-weight: 400; text-transform: uppercase;
+    font-size: clamp(56px, 13vw, 150px); line-height: .86; letter-spacing: -.01em;
+    background: var(--chrome); -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 2px 0 #000) drop-shadow(0 10px 30px rgba(255,255,255,.07));
+  }
+  .hero h1 em { font-style: normal; display: block; -webkit-text-stroke: 1.5px #cfcfd6; color: transparent; background: none; }
+  .hero p { color: var(--muted); max-width: 440px; margin-top: 14px; }
+  .sticker {
+    position: absolute; right: 4%; top: 18px; transform: rotate(9deg);
+    background: #fff; color: #000; font-family: var(--wide); font-size: 11px;
+    padding: 10px 14px; border-radius: 6px; border: 2px dashed #000; box-shadow: 4px 4px 0 #3a3a41;
+    text-align: center; line-height: 1.3;
+  }
+  .sticker.two { top: auto; bottom: -6px; right: 22%; transform: rotate(-6deg); background: #1c1c20; color: #fff; border-color: #fff; box-shadow: 4px 4px 0 #000; }
+  .spark { position: absolute; font-size: 26px; color: #fff; opacity: .8; animation: spin 7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 640px) { .sticker { display: none; } }
+
+  /* ---------- nav ---------- */
+  nav.tabs {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(10,10,11,.86); backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    margin-top: 24px;
+  }
+  nav .wrap { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+  nav .wrap::-webkit-scrollbar { display: none; }
+  nav button {
+    background: none; border: 0; color: var(--muted); padding: 14px 14px;
+    font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap;
+    border-bottom: 2px solid transparent;
+  }
+  nav button.on { color: #fff; border-bottom-color: #fff; }
+  nav button:hover { color: #fff; }
+  nav .count { background: #fff; color: #000; border-radius: 999px; padding: 0 6px; margin-left: 4px; font-size: 10px; }
+
+  section.view { display: none; padding: 30px 0 60px; }
+  section.view.on { display: block; animation: rise .35s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+  .sec-title { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+  .sec-title h2 { font-family: var(--display); font-weight: 400; font-size: 40px; text-transform: uppercase; line-height: 1; letter-spacing: .01em; }
+  .sec-title h2 span { color: var(--muted); font-size: 16px; font-family: var(--mono); letter-spacing: 0; margin-left: 8px; vertical-align: middle; }
+  .hint { color: var(--muted); font-size: 12px; }
+
+  /* ---------- botones ---------- */
+  .btn {
+    border: 1px solid #fff; background: #fff; color: #000; border-radius: 999px;
+    padding: 11px 20px; font-weight: 700; font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    transition: transform .12s, box-shadow .12s;
+    box-shadow: 3px 3px 0 var(--line-2);
+  }
+  .btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--muted); }
+  .btn:disabled { opacity: .35; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn.ghost { background: transparent; color: #fff; border-color: var(--line-2); box-shadow: none; }
+  .btn.ghost:hover { border-color: #fff; }
+  .btn.sm { padding: 7px 12px; font-size: 11px; }
+  .icon-btn {
+    width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line-2);
+    background: var(--bg-2); color: #fff; font-size: 16px;
+  }
+  .icon-btn:hover { border-color: #fff; }
+
+  /* ---------- calendario ---------- */
+  .week-bar { display: flex; align-items: center; gap: 10px; }
+  .week-bar strong { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; min-width: 170px; text-align: center; }
+  .days { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 18px; }
+  .day {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 14px 8px; text-align: center; color: var(--text); position: relative;
+    transition: border-color .15s, background .15s;
+  }
+  .day:hover { border-color: var(--line-2); }
+  .day .dn { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+  .day .dd { font-family: var(--display); font-size: 34px; line-height: 1.1; }
+  .day .df { font-size: 10px; color: var(--muted); }
+  .day.on { background: #fff; color: #000; border-color: #fff; box-shadow: 4px 4px 0 var(--line-2); }
+  .day.on .dn, .day.on .df { color: #3a3a41; }
+  .day.today::after {
+    content: "HOY"; position: absolute; top: -8px; left: 50%; transform: translateX(-50%) rotate(-4deg);
+    background: #000; color: #fff; border: 1px solid #fff; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 4px; letter-spacing: .1em;
+  }
+  .day.past { opacity: .4; }
+  @media (max-width: 640px) {
+    .days { gap: 5px; }
+    .day { padding: 10px 2px; border-radius: 10px; }
+    .day .dd { font-size: 24px; }
+    .day .df { display: none; }
+  }
+
+  .slots-wrap { position: relative; background: var(--bg-2); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+  .slots-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; flex-wrap: wrap; }
+  .slots-head b { text-transform: uppercase; letter-spacing: .1em; font-size: 13px; }
+  .legend { display: flex; gap: 14px; font-size: 11px; color: var(--muted); }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
+  .slot {
+    border: 1px solid var(--line-2); background: var(--card); color: #fff; border-radius: 12px;
+    padding: 14px 10px; text-align: left; transition: all .15s; position: relative; overflow: hidden;
+  }
+  .slot .t { font-family: var(--display); font-size: 28px; line-height: 1; letter-spacing: .02em; }
+  .slot .s { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+  .slot:hover:not(:disabled) { background: #fff; color: #000; border-color: #fff; transform: translateY(-2px); box-shadow: 4px 4px 0 var(--line-2); }
+  .slot:hover:not(:disabled) .s { color: #3a3a41; }
+  .slot:disabled { cursor: not-allowed; }
+  .slot.taken { background: repeating-linear-gradient(135deg, #141416 0 8px, #1b1b1f 8px 16px); color: #55555c; border-color: var(--line); }
+  .slot.mine { background: #d9d9de; color: #000; border-color: #fff; }
+  .slot.mine .s { color: #2b2b30; }
+  .slot.gone { opacity: .3; }
+  .closed-veil {
+    position: absolute; inset: 0; border-radius: 18px; display: none; place-items: center; text-align: center;
+    background: rgba(10,10,11,.82); backdrop-filter: blur(3px); z-index: 2; padding: 20px;
+  }
+  .closed-veil.show { display: grid; }
+  .closed-veil h3 { font-family: var(--display); font-weight: 400; font-size: 54px; line-height: 1; -webkit-text-stroke: 1.5px #fff; color: transparent; }
+  .closed-veil p { color: var(--muted); margin-top: 6px; }
+
+  .services { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 22px; }
+  .svc { border: 1px dashed var(--line-2); border-radius: 12px; padding: 12px 14px; display: flex; justify-content: space-between; gap: 8px; }
+  .svc b { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+  .svc span { color: var(--muted); font-size: 11px; display: block; }
+  .svc em { font-style: normal; font-weight: 700; white-space: nowrap; }
+
+  /* ---------- productos ---------- */
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+  .chip {
+    border: 1px solid var(--line-2); background: transparent; color: var(--muted); border-radius: 999px;
+    padding: 6px 12px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  }
+  .chip.on, .chip:hover { background: #fff; color: #000; border-color: #fff; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+  .prod {
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+    display: flex; flex-direction: column; transition: transform .15s, border-color .15s;
+  }
+  .prod:hover { transform: translateY(-3px); border-color: var(--line-2); }
+  .prod .art {
+    height: 150px; position: relative; display: grid; place-items: center;
+    background: radial-gradient(circle at 30% 20%, #3a3a41, #121214 70%);
+    border-bottom: 1px solid var(--line);
+  }
+  .prod .art svg { width: 84px; height: 84px; filter: drop-shadow(0 8px 14px rgba(0,0,0,.6)); }
+  .prod .tag {
+    position: absolute; top: 10px; left: 10px; font-size: 9px; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; background: #000; color: #fff; border: 1px solid var(--line-2); padding: 3px 7px; border-radius: 999px;
+  }
+  .prod .badge { position: absolute; top: 10px; right: 10px; background: #fff; color: #000; font-family: var(--wide); font-size: 9px; padding: 4px 7px; border-radius: 4px; transform: rotate(6deg); }
+  .prod .body { padding: 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .prod h4 { font-size: 14px; text-transform: uppercase; letter-spacing: .04em; line-height: 1.25; }
+  .prod p { color: var(--muted); font-size: 12px; flex: 1; }
+  .prod .row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .prod .price { font-family: var(--display); font-size: 26px; letter-spacing: .02em; }
+  .prod .stock { font-size: 10px; color: var(--muted); }
+  .held-bar {
+    margin-top: 18px; border: 1px solid #fff; border-radius: 14px; padding: 14px 16px;
+    display: none; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+    background: var(--bg-2);
+  }
+  .held-bar.show { display: flex; }
+
+  /* ---------- reseñas ---------- */
+  .rev-top { display: grid; grid-template-columns: 240px 1fr; gap: 16px; margin-bottom: 18px; }
+  @media (max-width: 720px) { .rev-top { grid-template-columns: 1fr; } }
+  .score { background: #fff; color: #000; border-radius: 18px; padding: 20px; box-shadow: 5px 5px 0 var(--line-2); }
+  .score .big { font-family: var(--display); font-size: 72px; line-height: 1; }
+  .stars { letter-spacing: 2px; }
+  .bars { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; display: grid; gap: 6px; align-content: center; }
+  .bar { display: grid; grid-template-columns: 26px 1fr 30px; gap: 10px; align-items: center; font-size: 11px; color: var(--muted); }
+  .bar div { height: 8px; background: #1f1f23; border-radius: 99px; overflow: hidden; }
+  .bar div i { display: block; height: 100%; background: #fff; border-radius: 99px; }
+  .reviews { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .rev { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+  .rev header { padding: 0; display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .rev .who { display: flex; gap: 10px; align-items: center; }
+  .rev .av { width: 34px; height: 34px; border-radius: 50%; background: var(--chrome); color: #000; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+  .rev b { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+  .rev small { display: block; color: var(--muted); font-size: 10px; }
+  .rev p { color: #cfcfd4; font-size: 13px; }
+  .rev .svc-tag { display: inline-block; margin-top: 10px; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; border: 1px solid var(--line-2); border-radius: 99px; padding: 2px 8px; color: var(--muted); }
+  .rev-form { background: var(--bg-2); border: 1px dashed var(--line-2); border-radius: 16px; padding: 16px; margin-bottom: 16px; display: none; }
+  .rev-form.show { display: block; }
+  .star-pick { display: flex; gap: 4px; margin: 6px 0 10px; }
+  .star-pick button { background: none; border: 0; font-size: 26px; color: #3a3a41; }
+  .star-pick button.on { color: #fff; }
+
+  /* ---------- mis citas / panel ---------- */
+  .list { display: grid; gap: 10px; }
+  .item {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .item .when { font-family: var(--display); font-size: 24px; line-height: 1; }
+  .item .meta { color: var(--muted); font-size: 12px; }
+  .empty { border: 1px dashed var(--line-2); border-radius: 14px; padding: 30px; text-align: center; color: var(--muted); }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; margin-bottom: 18px; }
+  .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+  .kpi span { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .kpi b { display: block; font-family: var(--display); font-weight: 400; font-size: 36px; line-height: 1.1; }
+  .kpi small { color: var(--muted); font-size: 11px; }
+  .kpi.hl { background: #fff; color: #000; border-color: #fff; box-shadow: 4px 4px 0 var(--line-2); }
+  .kpi.hl span, .kpi.hl small { color: #3a3a41; }
+
+  .panel-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 16px; }
+  @media (max-width: 860px) { .panel-grid { grid-template-columns: 1fr; } }
+  .box { background: var(--bg-2); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+  .box h3 { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+
+  .switch-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .switch-row .state { font-family: var(--display); font-size: 44px; line-height: 1; text-transform: uppercase; }
+  .switch { position: relative; width: 92px; height: 46px; border-radius: 999px; background: #2b2b30; border: 1px solid var(--line-2); flex-shrink: 0; }
+  .switch::after { content: ""; position: absolute; top: 4px; left: 4px; width: 36px; height: 36px; border-radius: 50%; background: #6d6d75; transition: all .2s; }
+  .switch.on { background: #fff; border-color: #fff; }
+  .switch.on::after { left: 50px; background: #000; }
+
+  .month { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+  .month .mh { font-size: 9px; text-align: center; color: var(--muted); letter-spacing: .14em; }
+  .mcell {
+    aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--line); display: grid; place-items: center;
+    font-size: 11px; font-weight: 700; position: relative; color: #fff;
+  }
+  .mcell.blank { border: 0; }
+  .mcell small { position: absolute; bottom: 2px; font-size: 8px; font-weight: 400; opacity: .8; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { text-align: left; color: var(--muted); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; padding: 8px 6px; border-bottom: 1px solid var(--line); font-weight: 400; }
+  td { padding: 10px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .tbl { overflow-x: auto; }
+  .pill { display: inline-block; font-size: 9px; padding: 2px 7px; border-radius: 99px; border: 1px solid var(--line-2); letter-spacing: .08em; margin: 1px 2px 1px 0; }
+  .pill.y { background: #fff; color: #000; border-color: #fff; }
+
+  /* ---------- modal ---------- */
+  .modal { position: fixed; inset: 0; z-index: 50; display: none; place-items: center; padding: 16px; background: rgba(0,0,0,.72); backdrop-filter: blur(6px); }
+  .modal.show { display: grid; animation: fade .2s; }
+  @keyframes fade { from { opacity: 0; } }
+  .sheet {
+    width: 100%; max-width: 460px; max-height: calc(100vh - 32px); overflow-y: auto;
+    background: var(--bg-2); border: 1px solid var(--line-2); border-radius: 20px; padding: 22px;
+    box-shadow: 8px 8px 0 #000, 0 0 0 1px #000;
+  }
+  .sheet.wide { max-width: 640px; }
+  .sheet-head { display: flex; justify-content: space-between; align-items: start; gap: 10px; margin-bottom: 14px; }
+  .sheet-head h3 { font-family: var(--display); font-weight: 400; font-size: 34px; line-height: 1; text-transform: uppercase; }
+  .sheet-head p { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .ticket {
+    background: #fff; color: #000; border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; position: relative;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .ticket::before, .ticket::after { content: ""; position: absolute; top: 50%; width: 16px; height: 16px; border-radius: 50%; background: var(--bg-2); transform: translateY(-50%); }
+  .ticket::before { left: -8px; } .ticket::after { right: -8px; }
+  .ticket .big { font-family: var(--display); font-size: 36px; line-height: 1; }
+  .ticket small { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #3a3a41; }
+  label.f { display: block; margin-bottom: 12px; }
+  label.f span { display: block; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+  .in {
+    width: 100%; background: var(--card); border: 1px solid var(--line-2); border-radius: 10px; color: #fff;
+    padding: 11px 12px; font-size: 14px; outline: none;
+  }
+  .in:focus { border-color: #fff; }
+  .in.err { border-color: #ff5a5a; }
+  select.in { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #fff 50%), linear-gradient(135deg, #fff 50%, transparent 50%); background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
+  .checks { border-top: 1px dashed var(--line-2); padding-top: 12px; margin-top: 4px; display: grid; gap: 10px; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 12px; color: #cfcfd4; cursor: pointer; }
+  .check input { appearance: none; width: 18px; height: 18px; border: 1px solid var(--line-2); border-radius: 5px; background: var(--card); flex-shrink: 0; margin-top: 1px; display: grid; place-items: center; cursor: pointer; }
+  .check input:checked { background: #fff; border-color: #fff; }
+  .check input:checked::after { content: "✓"; color: #000; font-size: 12px; font-weight: 700; }
+  .check.err input { border-color: #ff5a5a; }
+  .check a { color: #fff; }
+  .req { color: #fff; font-weight: 700; }
+  .logged { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; font-size: 12px; display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+  .logged b { display: block; font-size: 13px; text-transform: uppercase; }
+  .logged span { color: var(--muted); }
+  .linkish { background: none; border: 0; color: #fff; text-decoration: underline; font-size: 11px; }
+  .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; flex-wrap: wrap; }
+  .terms { font-size: 12px; color: #cfcfd4; display: grid; gap: 10px; }
+  .terms h4 { color: #fff; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; margin-top: 6px; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 30px); opacity: 0; z-index: 60;
+    background: #fff; color: #000; padding: 12px 18px; border-radius: 999px; font-weight: 700; font-size: 12px;
+    letter-spacing: .06em; box-shadow: 4px 4px 0 var(--line-2); transition: all .25s; pointer-events: none; max-width: calc(100% - 32px); text-align: center;
+  }
+  .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+  footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 11px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .user-chip { display: flex; align-items: center; gap: 8px; }
+  .user-chip .av { width: 30px; height: 30px; border-radius: 50%; background: var(--chrome); color: #000; display: grid; place-items: center; font-weight: 700; font-size: 12px; }
+  .hdr-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<div class="ticker"><span id="ticker"></span></div>
+
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="logo">M</div>
+        <div><small>Est. 2019 · Barber Studio</small><b>MARCUT'S BARBER</b></div>
+      </div>
+      <div class="hdr-right">
+        <div class="status" id="statusPill"><i></i><span>Abierto</span></div>
+        <div id="userSlot"></div>
+      </div>
+    </div>
+
+    <div class="hero">
+      <span class="spark" style="left:-6px; top:4px">✦</span>
+      <h1>Fresh cuts<em>no waiting</em></h1>
+      <p>Elige día y hora, deja tus datos una sola vez y llega directo a la silla. Lunes a sábado · 12:00 a 21:00 hrs.</p>
+      <div class="sticker">RESERVA<br>ONLINE ✦ 24/7</div>
+      <div class="sticker two">CORTE<br>DESDE $12.000</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button data-tab="reservar" class="on">Reservar</button>
+    <button data-tab="productos">Productos</button>
+    <button data-tab="resenas">Reseñas</button>
+    <button data-tab="citas">Mis citas <span class="count" id="myCount" hidden>0</span></button>
+    <button data-tab="panel">Panel barbero ✦</button>
+  </div>
+</nav>
+
+<main>
+  <!-- RESERVAR -->
+  <section class="view on" id="v-reservar">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2>Agenda <span id="monthLabel"></span></h2>
+        <div class="week-bar">
+          <button class="icon-btn" id="prevWeek" aria-label="Semana anterior">←</button>
+          <strong id="weekLabel"></strong>
+          <button class="icon-btn" id="nextWeek" aria-label="Semana siguiente">→</button>
+        </div>
+      </div>
+
+      <div class="days" id="days"></div>
+
+      <div class="slots-wrap">
+        <div class="slots-head">
+          <b id="dayLabel"></b>
+          <div class="legend">
+            <span><i style="background:#17171a;border:1px solid #3a3a41"></i>Libre</span>
+            <span><i style="background:repeating-linear-gradient(135deg,#141416 0 3px,#2b2b30 3px 6px)"></i>Tomada</span>
+            <span><i style="background:#d9d9de"></i>Tuya</span>
+          </div>
+        </div>
+        <div class="slots" id="slots"></div>
+        <div class="closed-veil" id="closedVeil">
+          <div><h3>CERRADO</h3><p>Las reservas están pausadas por el barbero.<br>Vuelve pronto o escríbenos por Instagram.</p></div>
+        </div>
+      </div>
+
+      <div class="services" id="services"></div>
+    </div>
+  </section>
+
+  <!-- PRODUCTOS -->
+  <section class="view" id="v-productos">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2>Shop <span>paga al llegar</span></h2>
+        <p class="hint">Aparta lo que quieras y lo tenemos listo en caja cuando vengas.</p>
+      </div>
+      <div class="filters" id="filters"></div>
+      <div class="grid" id="products"></div>
+      <div class="held-bar" id="heldBar">
+        <div><b id="heldText"></b><div class="hint">Se cobra en la barbería · efectivo, débito o transferencia</div></div>
+        <button class="btn ghost sm" id="clearHeld">Vaciar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEÑAS -->
+  <section class="view" id="v-resenas">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2>Reseñas <span id="revCount"></span></h2>
+        <button class="btn sm" id="writeReview">Escribir reseña</button>
+      </div>
+      <div class="rev-top">
+        <div class="score">
+          <div class="big" id="avg">0.0</div>
+          <div class="stars" id="avgStars"></div>
+          <small id="avgNote"></small>
+        </div>
+        <div class="bars" id="bars"></div>
+      </div>
+      <div class="rev-form" id="revForm">
+        <b style="font-size:12px;letter-spacing:.1em;text-transform:uppercase">Tu experiencia</b>
+        <div class="star-pick" id="starPick"></div>
+        <textarea class="in" id="revText" rows="3" maxlength="280" placeholder="¿Cómo te quedó el corte?"></textarea>
+        <div class="actions"><button class="btn ghost sm" id="cancelRev">Cancelar</button><button class="btn sm" id="sendRev">Publicar</button></div>
+      </div>
+      <div class="reviews" id="reviews"></div>
+    </div>
+  </section>
+
+  <!-- MIS CITAS -->
+  <section class="view" id="v-citas">
+    <div class="wrap">
+      <div class="sec-title"><h2>Mis citas</h2><span class="hint" id="citasWho"></span></div>
+      <div class="list" id="myList"></div>
+      <div class="sec-title" style="margin-top:30px"><h2 style="font-size:28px">Productos apartados</h2></div>
+      <div class="list" id="myHeld"></div>
+    </div>
+  </section>
+
+  <!-- PANEL -->
+  <section class="view" id="v-panel">
+    <div class="wrap" id="panelLock">
+      <div class="box" style="max-width:380px;margin:20px auto;text-align:center">
+        <h3 style="justify-content:center">Acceso barbero</h3>
+        <p class="hint" style="margin-bottom:12px">PIN demo: <b style="color:#fff">1234</b></p>
+        <input class="in" id="pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="text-align:center;font-size:22px;letter-spacing:.5em">
+        <div class="actions" style="justify-content:center"><button class="btn" id="unlock">Entrar</button></div>
+      </div>
+    </div>
+    <div class="wrap" id="panelBody" hidden>
+      <div class="sec-title">
+        <h2>Panel <span id="panelMonth"></span></h2>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn ghost sm" id="exportCsv">Exportar contactos CSV</button>
+          <button class="btn ghost sm" id="resetDemo">Reiniciar demo</button>
+          <button class="btn ghost sm" id="lock">Salir</button>
+        </div>
+      </div>
+
+      <div class="kpis" id="kpis"></div>
+
+      <div class="panel-grid">
+        <div style="display:grid;gap:16px;align-content:start">
+          <div class="box">
+            <h3>Estado de reservas</h3>
+            <div class="switch-row">
+              <div><div class="state" id="stateTxt">Abierto</div><div class="hint" id="stateHint"></div></div>
+              <button class="switch" id="switch" aria-label="Abrir o cerrar reservas"></button>
+            </div>
+          </div>
+          <div class="box">
+            <h3>Agenda del día <span class="hint" id="agendaDay"></span></h3>
+            <div class="list" id="agenda"></div>
+          </div>
+        </div>
+        <div class="box">
+          <h3>Ocupación del mes <span class="hint">horas reservadas / 9</span></h3>
+          <div class="month" id="monthGrid"></div>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top:16px">
+        <h3>Clientes y permisos de marketing <span class="hint" id="clientCount"></span></h3>
+        <div class="tbl"><table>
+          <thead><tr><th>Cliente</th><th>Contacto</th><th>Visitas</th><th>Permisos</th></tr></thead>
+          <tbody id="clients"></tbody>
+        </table></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>MARCUT'S BARBER · Av. Siempre Viva 742 · @marcutsbarber</span>
+    <span>Demo local · datos guardados solo en este navegador · <button class="linkish" data-open-terms>Términos y privacidad</button></span>
+  </div>
+</footer>
+
+<!-- MODAL RESERVA -->
+<div class="modal" id="bookModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div><h3 id="bookTitle">Reservar</h3><p id="bookSub">Tus datos quedan guardados para la próxima.</p></div>
+      <button class="icon-btn" data-close>✕</button>
+    </div>
+    <div class="ticket">
+      <div><small id="tDay"></small><div class="big" id="tHour"></div></div>
+      <div style="text-align:right"><small>Total</small><div class="big" id="tPrice"></div></div>
+    </div>
+    <label class="f"><span>Servicio</span><select class="in" id="fService"></select></label>
+
+    <div id="loggedBox" class="logged" hidden></div>
+
+    <div id="guestFields">
+      <label class="f"><span>Nombre</span><input class="in" id="fName" autocomplete="name" placeholder="Ej: Matías Rojas"></label>
+      <label class="f"><span>Teléfono</span><input class="in" id="fPhone" type="tel" autocomplete="tel" placeholder="+56 9 1234 5678"></label>
+      <label class="f"><span>Correo</span><input class="in" id="fEmail" type="email" autocomplete="email" placeholder="tu@correo.com"></label>
+      <div class="checks">
+        <label class="check" id="cTermsWrap"><input type="checkbox" id="cTerms"><span><span class="req">*</span> Acepto los <a href="#" data-open-terms>Términos y Condiciones</a> y la Política de Privacidad de Marcut's Barber.</span></label>
+        <label class="check"><input type="checkbox" id="cEmail"><span>Quiero recibir promociones, descuentos y novedades por <b>correo electrónico</b>.</span></label>
+        <label class="check"><input type="checkbox" id="cSms"><span>Quiero recibir recordatorios y ofertas por <b>WhatsApp / SMS</b> a mi número.</span></label>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn ghost" data-close>Cancelar</button>
+      <button class="btn" id="confirmBook">Confirmar hora</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL LOGIN (desde header / reseñas) -->
+<div class="modal" id="loginModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div><h3>Iniciar sesión</h3><p>Con tu nombre, teléfono y correo. Sin contraseñas.</p></div>
+      <button class="icon-btn" data-close>✕</button>
+    </div>
+    <label class="f"><span>Nombre</span><input class="in" id="lName" autocomplete="name"></label>
+    <label class="f"><span>Teléfono</span><input class="in" id="lPhone" type="tel" autocomplete="tel" placeholder="+56 9 1234 5678"></label>
+    <label class="f"><span>Correo</span><input class="in" id="lEmail" type="email" autocomplete="email"></label>
+    <div class="checks">
+      <label class="check" id="lTermsWrap"><input type="checkbox" id="lTerms"><span><span class="req">*</span> Acepto los <a href="#" data-open-terms>Términos y Condiciones</a> y la Política de Privacidad.</span></label>
+      <label class="check"><input type="checkbox" id="lMkEmail"><span>Acepto marketing por <b>correo</b>.</span></label>
+      <label class="check"><input type="checkbox" id="lMkSms"><span>Acepto marketing por <b>WhatsApp / SMS</b>.</span></label>
+    </div>
+    <div class="actions"><button class="btn ghost" data-close>Cancelar</button><button class="btn" id="doLogin">Entrar</button></div>
+  </div>
+</div>
+
+<!-- MODAL TÉRMINOS -->
+<div class="modal" id="termsModal">
+  <div class="sheet wide">
+    <div class="sheet-head">
+      <div><h3>Términos y privacidad</h3><p>Última actualización: septiembre 2026</p></div>
+      <button class="icon-btn" data-close>✕</button>
+    </div>
+    <div class="terms">
+      <h4>1. Reservas</h4>
+      <p>Cada reserva bloquea un bloque de 60 minutos entre las 12:00 y las 21:00 hrs, de lunes a sábado. Se espera al cliente hasta 10 minutos después de la hora; pasado ese tiempo la hora puede liberarse.</p>
+      <h4>2. Cancelaciones</h4>
+      <p>Puedes cancelar desde "Mis citas" sin costo hasta 3 horas antes. Tres inasistencias sin aviso pueden bloquear la reserva online.</p>
+      <h4>3. Productos apartados</h4>
+      <p>Los productos apartados se reservan hasta el cierre del día de tu cita y se pagan en la barbería. Los precios incluyen IVA.</p>
+      <h4>4. Datos personales</h4>
+      <p>Usamos tu nombre, teléfono y correo solo para gestionar tus reservas y enviarte confirmaciones y recordatorios de tu hora. No vendemos ni cedemos tus datos a terceros.</p>
+      <h4>5. Comunicaciones de marketing (opcional)</h4>
+      <p>Si marcas las casillas de marketing, aceptas recibir promociones, descuentos y novedades de Marcut's Barber por correo electrónico y/o WhatsApp/SMS, con un máximo de 4 mensajes al mes. Puedes retirar este consentimiento cuando quieras respondiendo "BAJA" o desde el enlace en cada correo. No aceptarlo no afecta tu reserva.</p>
+      <h4>6. Tus derechos</h4>
+      <p>Puedes pedir acceso, corrección o eliminación de tus datos escribiendo a hola@marcutsbarber.cl.</p>
+    </div>
+    <div class="actions"><button class="btn" data-close>Entendido</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   DATA
+   ========================================================= */
+const HOURS = [12,13,14,15,16,17,18,19,20]; // bloques de 60 min, último termina 21:00
+const DAY_NAMES = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
+const DAY_FULL = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const MONTHS = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+const SERVICES = [
+  { id:'corte',  name:'Corte clásico / fade', desc:'Lavado + corte + peinado', price:12000 },
+  { id:'combo',  name:'Corte + barba',        desc:'El combo completo',        price:17000 },
+  { id:'barba',  name:'Barba & perfilado',    desc:'Toalla caliente + navaja', price:8000 },
+  { id:'diseno', name:'Corte + diseño',       desc:'Líneas o freestyle',       price:15000 },
+  { id:'kids',   name:'Corte niño (-12)',     desc:'Paciencia incluida',       price:9000 },
+];
+
+const PRODUCTS = [
+  { id:'p1',  cat:'Styling',  name:'Pomada Matte Clay',        desc:'Fijación fuerte, acabado mate. 100 g.',              price:12990, stock:14, icon:'jar',    badge:'TOP' },
+  { id:'p2',  cat:'Styling',  name:'Pomada Base Agua Shine',    desc:'Brillo medio, se lava fácil. 120 g.',                price:10990, stock:9,  icon:'jar' },
+  { id:'p3',  cat:'Styling',  name:'Polvo Texturizador',        desc:'Volumen instantáneo en raíz. 20 g.',                 price:8990,  stock:18, icon:'shaker', badge:'NEW' },
+  { id:'p4',  cat:'Styling',  name:'Spray Fijador Street Hold', desc:'Fijación 24 h sin rigidez. 250 ml.',                 price:9490,  stock:7,  icon:'spray' },
+  { id:'p5',  cat:'Barba',    name:'Aceite para Barba Cedro',   desc:'Suaviza y quita la picazón. 30 ml.',                 price:11490, stock:11, icon:'dropper' },
+  { id:'p6',  cat:'Barba',    name:'Bálsamo Barba Sandalwood',  desc:'Control y forma para barba larga. 60 g.',            price:10490, stock:6,  icon:'jar' },
+  { id:'p7',  cat:'Barba',    name:'Kit Barba Starter',         desc:'Aceite + bálsamo + peine de madera.',                price:24990, stock:4,  icon:'box',    badge:'-15%' },
+  { id:'p8',  cat:'Cuidado',  name:'Shampoo Anticaspa Carbón',  desc:'Carbón activado + menta. 300 ml.',                   price:9990,  stock:12, icon:'bottle' },
+  { id:'p9',  cat:'Cuidado',  name:'After Shave Bálsamo Frío',  desc:'Calma la piel después del perfilado. 100 ml.',       price:8490,  stock:10, icon:'bottle' },
+  { id:'p10', cat:'Cuidado',  name:'Minoxidil Espuma 5%',       desc:'Para barba o entradas. Tratamiento 1 mes.',          price:19990, stock:5,  icon:'spray' },
+  { id:'p11', cat:'Accesorios', name:'Peine Carbono Antiestático', desc:'Diente fino y grueso, no se quiebra.',            price:4990,  stock:25, icon:'comb' },
+  { id:'p12', cat:'Accesorios', name:'Durag Satín Negro',       desc:'Para waves y proteger el peinado.',                  price:6990,  stock:8,  icon:'cap' },
+  { id:'p13', cat:'Pro',      name:'Máquina Trimmer Inalámbrica', desc:'Para mantener el perfilado en casa. Carga USB-C.', price:39990, stock:3,  icon:'clipper', badge:'PRO' },
+  { id:'p14', cat:'Pro',      name:'Navaja Barbera + 10 Hojas', desc:'Acero inoxidable, hoja intercambiable.',             price:14990, stock:6,  icon:'blade' },
+  { id:'p15', cat:'Pro',      name:'Capa de Corte Marcut\'s',   desc:'Capa impermeable con logo, edición limitada.',       price:17990, stock:4,  icon:'cape' },
+];
+
+const SEED_REVIEWS = [
+  { name:'Benja Soto',    stars:5, text:'El mejor fade que me han hecho. Llegué a mi hora exacta y en 40 min estaba listo.', svc:'Corte clásico / fade', days:3 },
+  { name:'Nico Fuentes',  stars:5, text:'Reservar por acá es demasiado cómodo, cero mensajes de "¿tienes hora?". El diseño quedó perfecto.', svc:'Corte + diseño', days:6 },
+  { name:'Diego Paredes', stars:4, text:'Muy buen perfilado de barba y el aceite de cedro vale la pena. Solo había poca pasada para estacionar.', svc:'Barba & perfilado', days:9 },
+  { name:'Tomás Vera',    stars:5, text:'Lo llevé con mi hijo, los dos salimos impecables. Buena música y buena onda.', svc:'Corte niño (-12)', days:14 },
+  { name:'Joaquín Lagos', stars:5, text:'Aparté la pomada mate desde la app y me la tenían lista en caja. Corte + barba 10/10.', svc:'Corte + barba', days:18 },
+  { name:'Felipe Araya',  stars:4, text:'Buen corte, precio justo. Me hubiese gustado más horas el domingo.', svc:'Corte clásico / fade', days:25 },
+];
+
+/* =========================================================
+   STORAGE
+   ========================================================= */
+const KEY = 'marcuts_barber_v1';
+let S;
+function load() {
+  try { S = JSON.parse(localStorage.getItem(KEY)); } catch (e) { S = null; }
+  if (!S) S = seed();
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+function seed() {
+  const users = {
+    'benja@demo.cl':   { name:'Benja Soto',    phone:'+56 9 8123 4411', email:'benja@demo.cl',   mkEmail:true,  mkSms:true,  terms:Date.now() },
+    'nico@demo.cl':    { name:'Nico Fuentes',  phone:'+56 9 7654 0923', email:'nico@demo.cl',    mkEmail:true,  mkSms:false, terms:Date.now() },
+    'diego@demo.cl':   { name:'Diego Paredes', phone:'+56 9 6612 7780', email:'diego@demo.cl',   mkEmail:false, mkSms:true,  terms:Date.now() },
+    'tomas@demo.cl':   { name:'Tomás Vera',    phone:'+56 9 5520 1184', email:'tomas@demo.cl',   mkEmail:true,  mkSms:true,  terms:Date.now() },
+    'joaquin@demo.cl': { name:'Joaquín Lagos', phone:'+56 9 9031 5567', email:'joaquin@demo.cl', mkEmail:false, mkSms:false, terms:Date.now() },
+  };
+  const emails = Object.keys(users);
+  const bookings = [];
+  // reservas demo deterministas repartidas en el mes actual
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth();
+  const last = new Date(y, m + 1, 0).getDate();
+  let k = 0;
+  for (let d = 1; d <= last; d++) {
+    const dt = new Date(y, m, d);
+    if (dt.getDay() === 0) continue;
+    const n = (d * 7 + 3) % 6; // 0..5 reservas por día
+    for (let i = 0; i < n; i++) {
+      const hour = HOURS[(d * 3 + i * 4) % HOURS.length];
+      const date = iso(dt);
+      if (bookings.some(b => b.date === date && b.hour === hour)) continue;
+      const email = emails[(d + i) % emails.length];
+      bookings.push({ id:'seed' + (k++), date, hour, service: SERVICES[(d + i) % SERVICES.length].id, email });
+    }
+  }
+  const reviews = SEED_REVIEWS.map((r, i) => ({ ...r, id:'r' + i, at: Date.now() - r.days * 864e5 }));
+  return { open:true, users, bookings, reviews, session:null, held:{} };
+}
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+function iso(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function parse(s) { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); }
+const clp = n => '$' + n.toLocaleString('es-CL');
+const hh = h => String(h).padStart(2,'0') + ':00';
+const svc = id => SERVICES.find(s => s.id === id) || SERVICES[0];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const initials = n => n.trim().split(/\s+/).slice(0,2).map(w => w[0]).join('').toUpperCase();
+const me = () => S.session && S.users[S.session];
+function mondayOf(d) { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); const w = (x.getDay() + 6) % 7; x.setDate(x.getDate() - w); return x; }
+function isPast(date, hour) { const d = parse(date); d.setHours(hour, 0, 0, 0); return d < new Date(); }
+function niceDate(date) { const d = parse(date); return DAY_FULL[(d.getDay()+6)%7] + ' ' + d.getDate() + ' de ' + MONTHS[d.getMonth()]; }
+
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2600);
+}
+function openModal(id) { $(id).classList.add('show'); }
+function closeModals() { $$('.modal').forEach(m => m.classList.remove('show')); }
+
+/* =========================================================
+   STATE (UI)
+   ========================================================= */
+let weekOffset = 0;
+let selDate = null;
+let pending = null; // { date, hour }
+let prodFilter = 'Todos';
+let revStars = 5;
+let panelOpen = false;
+
+function initSelDate() {
+  const now = new Date();
+  let d = new Date(now);
+  if (d.getDay() === 0 || now.getHours() >= 20) d.setDate(d.getDate() + 1);
+  if (d.getDay() === 0) d.setDate(d.getDate() + 1);
+  selDate = iso(d);
+  weekOffset = Math.round((mondayOf(d) - mondayOf(now)) / (7 * 864e5));
+}
+
+/* =========================================================
+   RENDER: header / ticker
+   ========================================================= */
+function renderHeader() {
+  const pill = $('#statusPill');
+  pill.classList.toggle('closed', !S.open);
+  pill.querySelector('span').textContent = S.open ? 'Abierto a reservas' : 'Cerrado';
+  const u = me();
+  $('#userSlot').innerHTML = u
+    ? `<div class="user-chip"><div class="av">${esc(initials(u.name))}</div><button class="linkish" id="logout">Salir</button></div>`
+    : `<button class="btn ghost sm" id="loginBtn">Iniciar sesión</button>`;
+  const lb = $('#loginBtn'); if (lb) lb.onclick = () => openLogin();
+  const lo = $('#logout'); if (lo) lo.onclick = () => { S.session = null; save(); renderAll(); toast('Sesión cerrada'); };
+
+  const t = `✦ MARCUT'S BARBER ✦ LUN–SÁB 12:00–21:00 ✦ ${S.open ? 'RESERVAS ABIERTAS' : 'RESERVAS CERRADAS'} ✦ CORTE + BARBA ${clp(17000)} ✦ APARTA PRODUCTOS Y PAGA AL LLEGAR ✦ FRESH CUTS ONLY `;
+  $('#ticker').textContent = t.repeat(4);
+}
+
+/* =========================================================
+   RENDER: calendario
+   ========================================================= */
+function renderCalendar() {
+  const mon = mondayOf(new Date()); mon.setDate(mon.getDate() + weekOffset * 7);
+  const sat = new Date(mon); sat.setDate(sat.getDate() + 5);
+  $('#weekLabel').textContent = `${mon.getDate()} ${MONTHS[mon.getMonth()].slice(0,3)} – ${sat.getDate()} ${MONTHS[sat.getMonth()].slice(0,3)}`;
+  $('#monthLabel').textContent = MONTHS[mon.getMonth()] + ' ' + mon.getFullYear();
+  $('#prevWeek').disabled = weekOffset <= 0;
+  $('#prevWeek').style.opacity = weekOffset <= 0 ? .3 : 1;
+
+  const todayIso = iso(new Date());
+  const days = [];
+  for (let i = 0; i < 6; i++) {
+    const d = new Date(mon); d.setDate(d.getDate() + i);
+    days.push(d);
+  }
+  if (!days.some(d => iso(d) === selDate)) {
+    const firstOpen = days.find(d => !HOURS.every(h => isPast(iso(d), h))) || days[0];
+    selDate = iso(firstOpen);
+  }
+  $('#days').innerHTML = days.map((d, i) => {
+    const di = iso(d);
+    const free = HOURS.filter(h => !isPast(di, h) && !S.bookings.some(b => b.date === di && b.hour === h)).length;
+    const past = HOURS.every(h => isPast(di, h));
+    return `<button class="day ${di === selDate ? 'on' : ''} ${di === todayIso ? 'today' : ''} ${past ? 'past' : ''}" data-date="${di}">
+      <div class="dn">${DAY_NAMES[i]}</div><div class="dd">${d.getDate()}</div><div class="df">${past ? '—' : free + ' libres'}</div></button>`;
+  }).join('');
+  $$('.day').forEach(b => b.onclick = () => { selDate = b.dataset.date; renderCalendar(); });
+
+  $('#dayLabel').textContent = niceDate(selDate);
+  const u = me();
+  $('#slots').innerHTML = HOURS.map(h => {
+    const b = S.bookings.find(x => x.date === selDate && x.hour === h);
+    const past = isPast(selDate, h);
+    const mine = b && u && b.email === u.email;
+    let cls = '', sub = 'Disponible';
+    if (mine) { cls = 'mine'; sub = 'Tu hora ✦'; }
+    else if (b) { cls = 'taken'; sub = 'Reservada'; }
+    else if (past) { cls = 'gone'; sub = 'Pasó'; }
+    const dis = (b && !mine) || past || !S.open;
+    return `<button class="slot ${cls}" data-hour="${h}" ${dis ? 'disabled' : ''}>
+      <div class="t">${hh(h)}</div><div class="s">${sub} · ${hh(h+1)}</div></button>`;
+  }).join('');
+  $$('.slot').forEach(b => b.onclick = () => {
+    const h = +b.dataset.hour;
+    if (b.classList.contains('mine')) { go('citas'); return; }
+    startBooking(selDate, h);
+  });
+  $('#closedVeil').classList.toggle('show', !S.open);
+
+  $('#services').innerHTML = SERVICES.map(s =>
+    `<div class="svc"><div><b>${s.name}</b><span>${s.desc}</span></div><em>${clp(s.price)}</em></div>`).join('');
+}
+
+/* =========================================================
+   RESERVA
+   ========================================================= */
+function startBooking(date, hour) {
+  if (!S.open) { toast('Reservas cerradas por ahora'); return; }
+  pending = { date, hour };
+  $('#tDay').textContent = niceDate(date);
+  $('#tHour').textContent = hh(hour) + '–' + hh(hour + 1);
+  $('#fService').innerHTML = SERVICES.map(s => `<option value="${s.id}">${s.name} · ${clp(s.price)}</option>`).join('');
+  updatePrice();
+  const u = me();
+  $('#guestFields').hidden = !!u;
+  $('#loggedBox').hidden = !u;
+  $('#bookTitle').textContent = u ? 'Confirmar' : 'Reservar';
+  $('#bookSub').textContent = u ? 'Reservando con tu sesión activa.' : 'Ingresa tus datos: con esto inicias sesión y queda tu reserva.';
+  if (u) {
+    $('#loggedBox').innerHTML = `<div><b>${esc(u.name)}</b><span>${esc(u.phone)} · ${esc(u.email)}</span></div><button class="linkish" id="notMe">No soy yo</button>`;
+    $('#notMe').onclick = () => { S.session = null; save(); renderAll(); startBooking(date, hour); };
+  } else {
+    ['#fName','#fPhone','#fEmail'].forEach(s => { $(s).value = ''; $(s).classList.remove('err'); });
+    ['#cTerms','#cEmail','#cSms'].forEach(s => $(s).checked = false);
+    $('#cTermsWrap').classList.remove('err');
+  }
+  openModal('#bookModal');
+  if (!u) setTimeout(() => $('#fName').focus(), 50);
+}
+function updatePrice() { $('#tPrice').textContent = clp(svc($('#fService').value).price); }
+
+function validUser(name, phone, email, terms, prefix) {
+  let ok = true;
+  const f = (sel, cond) => { $(sel).classList.toggle('err', !cond); if (!cond) ok = false; };
+  f(prefix + 'Name', name.trim().length >= 2);
+  f(prefix + 'Phone', phone.replace(/\D/g, '').length >= 8);
+  f(prefix + 'Email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()));
+  $(prefix === '#f' ? '#cTermsWrap' : '#lTermsWrap').classList.toggle('err', !terms);
+  if (!terms) ok = false;
+  return ok;
+}
+function upsertUser(name, phone, email, mkEmail, mkSms) {
+  const key = email.trim().toLowerCase();
+  const prev = S.users[key] || {};
+  S.users[key] = { ...prev, name: name.trim(), phone: phone.trim(), email: key, mkEmail, mkSms, terms: Date.now() };
+  S.session = key;
+  return S.users[key];
+}
+
+function confirmBooking() {
+  if (!pending) return;
+  let u = me();
+  if (!u) {
+    const n = $('#fName').value, p = $('#fPhone').value, e = $('#fEmail').value, t = $('#cTerms').checked;
+    if (!validUser(n, p, e, t, '#f')) { toast(t ? 'Revisa tus datos' : 'Debes aceptar los términos'); return; }
+    u = upsertUser(n, p, e, $('#cEmail').checked, $('#cSms').checked);
+  }
+  const { date, hour } = pending;
+  if (S.bookings.some(b => b.date === date && b.hour === hour)) { toast('Esa hora se acaba de tomar'); closeModals(); renderAll(); return; }
+  S.bookings.push({ id: 'b' + Date.now(), date, hour, service: $('#fService').value, email: u.email, created: Date.now() });
+  save(); closeModals(); pending = null;
+  renderAll();
+  toast(`✦ Listo ${u.name.split(' ')[0]}: ${niceDate(date)} a las ${hh(hour)}`);
+}
+
+/* =========================================================
+   LOGIN directo
+   ========================================================= */
+let afterLogin = null;
+function openLogin(cb) {
+  afterLogin = cb || null;
+  ['#lName','#lPhone','#lEmail'].forEach(s => { $(s).value = ''; $(s).classList.remove('err'); });
+  ['#lTerms','#lMkEmail','#lMkSms'].forEach(s => $(s).checked = false);
+  $('#lTermsWrap').classList.remove('err');
+  openModal('#loginModal');
+  setTimeout(() => $('#lName').focus(), 50);
+}
+function doLogin() {
+  const n = $('#lName').value, p = $('#lPhone').value, e = $('#lEmail').value, t = $('#lTerms').checked;
+  if (!validUser(n, p, e, t, '#l')) { toast(t ? 'Revisa tus datos' : 'Debes aceptar los términos'); return; }
+  const u = upsertUser(n, p, e, $('#lMkEmail').checked, $('#lMkSms').checked);
+  save(); closeModals(); renderAll();
+  toast('Hola ' + u.name.split(' ')[0] + ' ✦');
+  if (afterLogin) { const cb = afterLogin; afterLogin = null; cb(); }
+}
+
+/* =========================================================
+   PRODUCTOS
+   ========================================================= */
+const ICONS = {
+  jar: `<rect x="18" y="34" width="64" height="46" rx="8" fill="#e9e9ec"/><rect x="14" y="22" width="72" height="16" rx="5" fill="#8b8b93"/><rect x="26" y="48" width="48" height="18" rx="3" fill="#0a0a0b"/><text x="50" y="61" font-size="9" font-family="Anton" fill="#fff" text-anchor="middle">MARCUT'S</text>`,
+  shaker: `<rect x="32" y="30" width="36" height="54" rx="8" fill="#e9e9ec"/><rect x="34" y="16" width="32" height="16" rx="5" fill="#8b8b93"/><rect x="36" y="50" width="28" height="16" fill="#0a0a0b"/><text x="50" y="62" font-size="8" font-family="Anton" fill="#fff" text-anchor="middle">POWDER</text>`,
+  spray: `<rect x="30" y="34" width="40" height="54" rx="10" fill="#e9e9ec"/><rect x="40" y="20" width="20" height="16" rx="3" fill="#8b8b93"/><rect x="56" y="22" width="16" height="6" rx="2" fill="#8b8b93"/><rect x="34" y="54" width="32" height="18" fill="#0a0a0b"/><text x="50" y="67" font-size="8" font-family="Anton" fill="#fff" text-anchor="middle">HOLD</text>`,
+  dropper: `<rect x="32" y="40" width="36" height="46" rx="8" fill="#e9e9ec"/><rect x="40" y="24" width="20" height="18" rx="3" fill="#0a0a0b"/><ellipse cx="50" cy="20" rx="8" ry="7" fill="#8b8b93"/><rect x="36" y="56" width="28" height="16" fill="#0a0a0b"/><text x="50" y="68" font-size="8" font-family="Anton" fill="#fff" text-anchor="middle">OIL</text>`,
+  bottle: `<path d="M38 14h24v14l8 10v46a6 6 0 0 1-6 6H36a6 6 0 0 1-6-6V38l8-10z" fill="#e9e9ec"/><rect x="38" y="10" width="24" height="10" rx="2" fill="#8b8b93"/><rect x="34" y="52" width="32" height="18" fill="#0a0a0b"/><text x="50" y="65" font-size="8" font-family="Anton" fill="#fff" text-anchor="middle">CARE</text>`,
+  box: `<path d="M16 36l34-14 34 14v40L50 90 16 76z" fill="#e9e9ec"/><path d="M16 36l34 14 34-14M50 50v40" stroke="#8b8b93" stroke-width="3" fill="none"/><text x="33" y="70" font-size="9" font-family="Anton" fill="#0a0a0b" text-anchor="middle" transform="rotate(20 33 70)">KIT</text>`,
+  comb: `<rect x="14" y="34" width="72" height="14" rx="4" fill="#e9e9ec"/>${Array.from({length:14},(_,i)=>`<rect x="${17+i*5}" y="46" width="2.6" height="${i<7?24:18}" fill="#e9e9ec"/>`).join('')}`,
+  cap: `<path d="M18 62c0-22 14-36 32-36s32 14 32 36z" fill="#1f1f23" stroke="#e9e9ec" stroke-width="3"/><path d="M50 62c4 12 14 20 26 24" stroke="#e9e9ec" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M50 26v36" stroke="#8b8b93" stroke-width="2"/>`,
+  clipper: `<rect x="34" y="22" width="32" height="64" rx="12" fill="#e9e9ec"/><rect x="30" y="12" width="40" height="14" rx="3" fill="#8b8b93"/>${Array.from({length:7},(_,i)=>`<rect x="${32+i*5.5}" y="8" width="2.5" height="6" fill="#8b8b93"/>`).join('')}<rect x="44" y="44" width="12" height="20" rx="6" fill="#0a0a0b"/>`,
+  blade: `<rect x="12" y="44" width="46" height="12" rx="6" fill="#0a0a0b" stroke="#8b8b93" stroke-width="2"/><path d="M58 44h28l-6 12H58z" fill="#e9e9ec"/><circle cx="58" cy="50" r="3" fill="#8b8b93"/>`,
+  cape: `<path d="M30 20h40l18 66H12z" fill="#e9e9ec"/><path d="M40 20c0 8 20 8 20 0" fill="#0a0a0b"/><text x="50" y="62" font-size="10" font-family="Anton" fill="#0a0a0b" text-anchor="middle">MARCUT'S</text>`,
+};
+function renderProducts() {
+  const cats = ['Todos', ...new Set(PRODUCTS.map(p => p.cat))];
+  $('#filters').innerHTML = cats.map(c => `<button class="chip ${c === prodFilter ? 'on' : ''}" data-c="${c}">${c}</button>`).join('');
+  $$('#filters .chip').forEach(b => b.onclick = () => { prodFilter = b.dataset.c; renderProducts(); });
+  const held = heldList();
+  $('#products').innerHTML = PRODUCTS.filter(p => prodFilter === 'Todos' || p.cat === prodFilter).map(p => {
+    const q = held[p.id] || 0;
+    return `<article class="prod">
+      <div class="art"><span class="tag">${p.cat}</span>${p.badge ? `<span class="badge">${p.badge}</span>` : ''}
+        <svg viewBox="0 0 100 100">${ICONS[p.icon]}</svg></div>
+      <div class="body">
+        <h4>${p.name}</h4><p>${p.desc}</p>
+        <div class="row"><div><div class="price">${clp(p.price)}</div><div class="stock">${p.stock - q} en tienda</div></div>
+        <button class="btn sm ${q ? 'ghost' : ''}" data-p="${p.id}">${q ? 'Apartado ×' + q : 'Apartar'}</button></div>
+      </div></article>`;
+  }).join('');
+  $$('#products [data-p]').forEach(b => b.onclick = () => holdProduct(b.dataset.p));
+
+  const items = Object.entries(held);
+  const total = items.reduce((a, [id, q]) => a + PRODUCTS.find(p => p.id === id).price * q, 0);
+  const n = items.reduce((a, [, q]) => a + q, 0);
+  $('#heldBar').classList.toggle('show', n > 0);
+  $('#heldText').textContent = `${n} producto${n === 1 ? '' : 's'} apartado${n === 1 ? '' : 's'} · ${clp(total)}`;
+}
+function heldList() { return (S.session && S.held[S.session]) || {}; }
+function holdProduct(id) {
+  if (!me()) { openLogin(() => holdProduct(id)); return; }
+  const p = PRODUCTS.find(x => x.id === id);
+  const h = S.held[S.session] = S.held[S.session] || {};
+  if ((h[id] || 0) >= p.stock) { toast('Sin más stock'); return; }
+  h[id] = (h[id] || 0) + 1;
+  save(); renderAll();
+  toast(`Apartado: ${p.name}. Lo pagas al llegar`);
+}
+
+/* =========================================================
+   RESEÑAS
+   ========================================================= */
+function stars(n) { return '★'.repeat(n) + '☆'.repeat(5 - n); }
+function ago(t) {
+  const d = Math.floor((Date.now() - t) / 864e5);
+  return d <= 0 ? 'hoy' : d === 1 ? 'ayer' : `hace ${d} días`;
+}
+function renderReviews() {
+  const R = [...S.reviews].sort((a, b) => b.at - a.at);
+  const avg = R.reduce((a, r) => a + r.stars, 0) / (R.length || 1);
+  $('#avg').textContent = avg.toFixed(1);
+  $('#avgStars').textContent = stars(Math.round(avg));
+  $('#avgNote').textContent = `${R.length} reseñas verificadas`;
+  $('#revCount').textContent = R.length;
+  $('#bars').innerHTML = [5,4,3,2,1].map(s => {
+    const c = R.filter(r => r.stars === s).length;
+    return `<div class="bar"><span>${s}★</span><div><i style="width:${R.length ? c / R.length * 100 : 0}%"></i></div><span>${c}</span></div>`;
+  }).join('');
+  $('#reviews').innerHTML = R.map(r => `<div class="rev">
+    <header><div class="who"><div class="av">${esc(initials(r.name))}</div><div><b>${esc(r.name)}</b><small>${ago(r.at)}</small></div></div>
+    <span class="stars">${stars(r.stars)}</span></header>
+    <p>${esc(r.text)}</p>${r.svc ? `<span class="svc-tag">${esc(r.svc)}</span>` : ''}</div>`).join('');
+  $('#starPick').innerHTML = [1,2,3,4,5].map(i => `<button class="${i <= revStars ? 'on' : ''}" data-s="${i}">★</button>`).join('');
+  $$('#starPick button').forEach(b => b.onclick = () => { revStars = +b.dataset.s; renderReviews(); });
+}
+
+/* =========================================================
+   MIS CITAS
+   ========================================================= */
+function renderMine() {
+  const u = me();
+  const mine = u ? S.bookings.filter(b => b.email === u.email && !isPast(b.date, b.hour)).sort((a, b) => (a.date + hh(a.hour)).localeCompare(b.date + hh(b.hour))) : [];
+  $('#myCount').hidden = !mine.length; $('#myCount').textContent = mine.length;
+  $('#citasWho').textContent = u ? `${u.name} · ${u.phone}` : '';
+  if (!u) {
+    $('#myList').innerHTML = `<div class="empty">Inicia sesión para ver tus horas.<br><br><button class="btn sm" id="loginFromCitas">Iniciar sesión</button></div>`;
+    $('#loginFromCitas').onclick = () => openLogin();
+    $('#myHeld').innerHTML = '';
+    return;
+  }
+  $('#myList').innerHTML = mine.length ? mine.map(b => `<div class="item">
+      <div><div class="when">${hh(b.hour)} · ${niceDate(b.date)}</div><div class="meta">${svc(b.service).name} · ${clp(svc(b.service).price)}</div></div>
+      <button class="btn ghost sm" data-cancel="${b.id}">Cancelar</button></div>`).join('')
+    : `<div class="empty">No tienes horas agendadas.<br><br><button class="btn sm" data-go="reservar">Reservar ahora</button></div>`;
+  $$('[data-cancel]').forEach(b => b.onclick = () => {
+    if (!confirm('¿Cancelar esta hora?')) return;
+    S.bookings = S.bookings.filter(x => x.id !== b.dataset.cancel); save(); renderAll(); toast('Hora cancelada');
+  });
+  const held = Object.entries(heldList());
+  $('#myHeld').innerHTML = held.length ? held.map(([id, q]) => {
+    const p = PRODUCTS.find(x => x.id === id);
+    return `<div class="item"><div><b>${p.name}</b><div class="meta">×${q} · ${clp(p.price * q)} · pagas al llegar</div></div>
+      <button class="btn ghost sm" data-unhold="${id}">Quitar</button></div>`;
+  }).join('') : `<div class="empty">Nada apartado todavía.</div>`;
+  $$('[data-unhold]').forEach(b => b.onclick = () => {
+    const h = S.held[S.session]; if (--h[b.dataset.unhold] <= 0) delete h[b.dataset.unhold]; save(); renderAll();
+  });
+  $$('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
+}
+
+/* =========================================================
+   PANEL BARBERO
+   ========================================================= */
+function renderPanel() {
+  $('#panelLock').hidden = panelOpen;
+  $('#panelBody').hidden = !panelOpen;
+  $('#switch').classList.toggle('on', S.open);
+  $('#stateTxt').textContent = S.open ? 'Abierto' : 'Cerrado';
+  $('#stateHint').textContent = S.open ? 'Los clientes pueden reservar ahora' : 'Nadie puede reservar hasta que abras';
+  if (!panelOpen) return;
+
+  const now = new Date(), y = now.getFullYear(), m = now.getMonth();
+  $('#panelMonth').textContent = MONTHS[m] + ' ' + y;
+  const last = new Date(y, m + 1, 0).getDate();
+  const monthB = S.bookings.filter(b => { const d = parse(b.date); return d.getFullYear() === y && d.getMonth() === m; });
+  let workDays = 0; for (let d = 1; d <= last; d++) if (new Date(y, m, d).getDay() !== 0) workDays++;
+  const capacity = workDays * HOURS.length;
+  const revenue = monthB.reduce((a, b) => a + svc(b.service).price, 0);
+  const done = monthB.filter(b => isPast(b.date, b.hour));
+  const doneRev = done.reduce((a, b) => a + svc(b.service).price, 0);
+  const heldTotal = Object.values(S.held).reduce((a, h) => a + Object.entries(h).reduce((x, [id, q]) => x + PRODUCTS.find(p => p.id === id).price * q, 0), 0);
+  const users = Object.values(S.users);
+  const top = Object.entries(monthB.reduce((a, b) => (a[b.hour] = (a[b.hour] || 0) + 1, a), {})).sort((a, b) => b[1] - a[1])[0];
+
+  $('#kpis').innerHTML = [
+    ['Reservas del mes', monthB.length, `${done.length} atendidas · ${monthB.length - done.length} por venir`, true],
+    ['Ocupación', Math.round(monthB.length / capacity * 100) + '%', `${monthB.length} de ${capacity} horas`],
+    ['Ingreso proyectado', clp(revenue), `${clp(doneRev)} ya realizado`],
+    ['Productos apartados', clp(heldTotal), 'por cobrar en caja'],
+    ['Hora más pedida', top ? hh(+top[0]) : '—', top ? `${top[1]} reservas` : ''],
+    ['Base marketing', users.filter(u => u.mkEmail || u.mkSms).length, `${users.filter(u => u.mkEmail).length} email · ${users.filter(u => u.mkSms).length} WhatsApp`],
+  ].map(([l, v, s, hl]) => `<div class="kpi ${hl ? 'hl' : ''}"><span>${l}</span><b>${v}</b><small>${s}</small></div>`).join('');
+
+  // agenda del día (o próximo día hábil)
+  let ad = new Date(now); if (ad.getDay() === 0) ad.setDate(ad.getDate() + 1);
+  const adIso = iso(ad);
+  $('#agendaDay').textContent = niceDate(adIso);
+  const dayB = S.bookings.filter(b => b.date === adIso).sort((a, b) => a.hour - b.hour);
+  $('#agenda').innerHTML = HOURS.map(h => {
+    const b = dayB.find(x => x.hour === h);
+    const u = b && S.users[b.email];
+    return b ? `<div class="item" style="padding:10px 14px"><div><div class="when" style="font-size:20px">${hh(h)}</div>
+        <div class="meta">${esc(u ? u.name : b.email)} · ${svc(b.service).name}</div></div>
+        <div style="display:flex;gap:6px;align-items:center"><span class="meta">${u ? esc(u.phone) : ''}</span><button class="btn ghost sm" data-adm-cancel="${b.id}">✕</button></div></div>`
+      : `<div class="item" style="padding:10px 14px;opacity:.45"><div class="when" style="font-size:20px">${hh(h)}</div><span class="meta">Libre</span></div>`;
+  }).join('');
+  $$('[data-adm-cancel]').forEach(b => b.onclick = () => {
+    if (!confirm('¿Cancelar esta reserva?')) return;
+    S.bookings = S.bookings.filter(x => x.id !== b.dataset.admCancel); save(); renderAll(); toast('Reserva cancelada');
+  });
+
+  // mapa del mes
+  const first = new Date(y, m, 1);
+  let lead = (first.getDay() + 6) % 7; if (lead === 6) lead = 0;
+  let cells = DAY_NAMES.map(n => `<div class="mh">${n}</div>`).join('');
+  cells += '<div class="mcell blank"></div>'.repeat(lead);
+  for (let d = 1; d <= last; d++) {
+    const dt = new Date(y, m, d);
+    if (dt.getDay() === 0) continue;
+    const c = S.bookings.filter(b => b.date === iso(dt)).length;
+    const r = c / HOURS.length;
+    const bg = `rgba(255,255,255,${0.04 + r * 0.9})`;
+    const fg = r > .5 ? '#000' : '#fff';
+    const isT = iso(dt) === iso(now);
+    cells += `<div class="mcell" style="background:${bg};color:${fg};${isT ? 'outline:2px solid #fff;outline-offset:2px' : ''}" title="${c} reservas">${d}<small>${c}/9</small></div>`;
+  }
+  $('#monthGrid').innerHTML = cells;
+
+  // clientes
+  $('#clientCount').textContent = users.length + ' clientes';
+  $('#clients').innerHTML = users.map(u => {
+    const v = S.bookings.filter(b => b.email === u.email).length;
+    return `<tr><td><b>${esc(u.name)}</b></td><td>${esc(u.phone)}<br><span class="hint">${esc(u.email)}</span></td><td>${v}</td>
+      <td><span class="pill y">Términos ✓</span><span class="pill ${u.mkEmail ? 'y' : ''}">Email ${u.mkEmail ? '✓' : '✕'}</span><span class="pill ${u.mkSms ? 'y' : ''}">WhatsApp ${u.mkSms ? '✓' : '✕'}</span></td></tr>`;
+  }).join('');
+}
+
+function exportCsv() {
+  const rows = [['nombre','telefono','correo','visitas','acepta_terminos','marketing_email','marketing_whatsapp_sms']];
+  Object.values(S.users).forEach(u => rows.push([u.name, u.phone, u.email, S.bookings.filter(b => b.email === u.email).length, 'si', u.mkEmail ? 'si' : 'no', u.mkSms ? 'si' : 'no']));
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = 'marcuts-clientes.csv'; a.click();
+  toast('CSV descargado');
+}
+
+/* =========================================================
+   NAV + WIRING
+   ========================================================= */
+function go(tab) {
+  $$('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  $$('section.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + tab));
+  window.scrollTo({ top: $('nav.tabs').offsetTop, behavior: 'smooth' });
+}
+function renderAll() { renderHeader(); renderCalendar(); renderProducts(); renderReviews(); renderMine(); renderPanel(); }
+
+function wire() {
+  $$('nav button').forEach(b => b.onclick = () => go(b.dataset.tab));
+  $('#prevWeek').onclick = () => { if (weekOffset > 0) { weekOffset--; selDate = null; renderCalendar(); } };
+  $('#nextWeek').onclick = () => { weekOffset++; selDate = null; renderCalendar(); };
+  $('#fService').onchange = updatePrice;
+  $('#confirmBook').onclick = confirmBooking;
+  $('#doLogin').onclick = doLogin;
+  document.addEventListener('click', e => {
+    const c = e.target.closest('[data-close]');
+    if (c) c.closest('.modal').classList.remove('show');
+    if (e.target.classList.contains('modal')) e.target.classList.remove('show');
+    const t = e.target.closest('[data-open-terms]');
+    if (t) { e.preventDefault(); openModal('#termsModal'); }
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
+  $('#statusPill').onclick = () => go('panel');
+  $('#statusPill').style.cursor = 'pointer';
+
+  $('#clearHeld').onclick = () => { if (S.session) { S.held[S.session] = {}; save(); renderAll(); } };
+
+  $('#writeReview').onclick = () => {
+    if (!me()) { openLogin(() => $('#revForm').classList.add('show')); return; }
+    $('#revForm').classList.add('show'); $('#revText').focus();
+  };
+  $('#cancelRev').onclick = () => $('#revForm').classList.remove('show');
+  $('#sendRev').onclick = () => {
+    const t = $('#revText').value.trim();
+    if (t.length < 5) { toast('Escribe al menos una frase'); return; }
+    const last = S.bookings.filter(b => b.email === S.session).pop();
+    S.reviews.push({ id: 'r' + Date.now(), name: me().name, stars: revStars, text: t, svc: last ? svc(last.service).name : '', at: Date.now() });
+    $('#revText').value = ''; $('#revForm').classList.remove('show');
+    save(); renderAll(); toast('Gracias por tu reseña ✦');
+  };
+
+  const unlock = () => {
+    if ($('#pin').value === '1234') { panelOpen = true; $('#pin').value = ''; renderPanel(); }
+    else { $('#pin').classList.add('err'); toast('PIN incorrecto'); }
+  };
+  $('#unlock').onclick = unlock;
+  $('#pin').onkeydown = e => { if (e.key === 'Enter') unlock(); };
+  $('#lock').onclick = () => { panelOpen = false; renderPanel(); };
+  $('#switch').onclick = () => {
+    S.open = !S.open; save(); renderAll();
+    toast(S.open ? 'Reservas ABIERTAS' : 'Reservas CERRADAS');
+  };
+  $('#exportCsv').onclick = exportCsv;
+  $('#resetDemo').onclick = () => {
+    if (!confirm('Esto borra reservas, clientes y reseñas nuevas. ¿Seguir?')) return;
+    S = seed(); save(); initSelDate(); renderAll(); toast('Demo reiniciada');
+  };
+
+  ['#fName','#fPhone','#fEmail'].forEach(s => $(s).addEventListener('keydown', e => { if (e.key === 'Enter') confirmBooking(); }));
+  ['#lName','#lPhone','#lEmail'].forEach(s => $(s).addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); }));
+}
+
+load();
+initSelDate();
+wire();
+renderAll();
+setInterval(renderCalendar, 60000);
+</script>
+</body>
+</html>
