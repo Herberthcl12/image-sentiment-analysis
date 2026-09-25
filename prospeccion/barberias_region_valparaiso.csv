@@ -1,0 +1,54 @@
+﻿prioridad,barberia,comuna,direccion,sistema_actual,link_reserva_o_web,angulo_de_venta,nota
+A - alta,Buona Pinta Barber Truck,Concón,Móvil (barber truck),WhatsApp (sistema en actualización),https://www.buonapinta.cl/,Su propia web dice que reservan por WhatsApp mientras actualizan el sistema: hoy buscan solución,Contactar primero
+A - alta,Life Barbería & Studio,Viña del Mar,1 Norte 681,Fresha,https://www.fresha.com/a/life-barberia-studio-vina-del-mar-vina-del-mar-1-norte-681-rnes29ng,"Fresha dejó de ser gratis en julio 2026 (USD 14,95–19,95 por profesional + 20% por cliente nuevo del marketplace)",También aparece en AgendaPro
+A - alta,Macho's Barbershop,Viña del Mar,"4 Norte 477, local 5",Fresha,https://www.fresha.com/a/machos-barbershop-vina-del-mar-vina-del-mar-4-norte-477-w61hgpyh,Mismo ángulo Fresha: costo nuevo en dólares + comisión,Abre lunes a domingo
+A - alta,Alpacino Barber,Viña del Mar,Por confirmar,Fresha,https://www.fresha.com/lp/en/bt/barbershops/in/cl-vi%C3%B1a-del-mar,Mismo ángulo Fresha,Buscar ficha en el listado de Fresha
+A - alta,Nico Barber Studio,Viña del Mar,Por confirmar,Fresha,https://www.fresha.com/lp/en/bt/barbershops/in/cl-vi%C3%B1a-del-mar,Mismo ángulo Fresha,Buscar ficha en el listado de Fresha
+A - alta,Barbería Designed,Villa Alemana,Buenos Aires 943 B,"Setmore (gratis, en inglés, genérico)",https://barberiadesigned.setmore.com/,"Setmore no tiene marca propia, ni shop, ni base de marketing en español",
+A - alta,Mekaddesh Studio & Barbería,Quillota,Chacabuco 183,Setmore,https://mekaddesh.setmore.com/,Ángulo Setmore: pasar de página genérica a web con marca,IG @mekaddesh.studio
+A - alta,Krilo Barbershop,Quillota,Pasaje Herrero 1200,Setmore,https://krilobarbershop.setmore.com/,Ángulo Setmore,Corte $13.000 / 45 min según su página
+A - alta,La Silla Studio,Limache,Por confirmar,Setmore,https://lasilla.setmore.com/,Ángulo Setmore,
+A - alta,Leo Barber,Los Andes,Por confirmar,Setmore,https://leobarber12.setmore.com/,Ángulo Setmore,Servicio a $16.000 según su página
+A - alta,Matías Rossi,Los Andes,Por confirmar,Setmore,https://matiasrossi.setmore.com/,Barbero independiente: plan 1 barbero,
+A - alta,Scarface Studio,Quilpué,Freire 915,Web propia + WhatsApp (+56 9 5142 0003),https://scarfacestudio.cl/,Reserva principal por WhatsApp: automatizar recordatorios y liberar tiempo,Fade $17.000 / 60 min; barba $12.000
+A - alta,Barbería Victory,Quilpué,Por confirmar,Solo Facebook,https://www.facebook.com/barberiavictory/,Sin sistema de reservas visible,Verificar si sigue activa
+A - alta,The Boss Barber,Limache,Por confirmar,Solo Facebook,https://www.facebook.com/barberiathebossbarber/,Sin sistema de reservas visible,Verificar si sigue activa
+A - alta,Bastardos Barber Studio,Por confirmar (apareció en búsqueda de Quilpué),Por confirmar,TuReserva,https://bigbear.tureserva.cl/,Sistema chico: evaluar si le falta marketing y shop,Confirmar comuna
+B - media,Barbería León Barber,Valparaíso,"Condell 1329, local 16",AgendaPro,https://agendapro.com/mp/cl/pl/barberia-leon-barber-cl-valparaiso/40247,Tiene AgendaPro pero sin web propia: ofrecer marca + marketing,
+B - media,Barbería Bear Men Studio,Valparaíso / Viña del Mar,Por confirmar,AgendaPro + web propia,https://agendapro.com/mp/cl/pl/barberia-bear-men-studio-valparaiso/212413,Ya invierte en marca (bear-menstudio.cl): venderle marketing y campañas,IG @bear_menstudio
+B - media,Barberos Chile,Valparaíso,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/pl/barberos-chile-valparaiso/40259,Ficha genérica AgendaPro,
+B - media,Evolution Barber Shop & Club,Valparaíso,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/barberias-region-de-valparaiso,Ficha genérica AgendaPro,
+B - media,Barbería Los Pinos Barber,Región de Valparaíso,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/pl/barberia-los-pinos-barber-region-de-valparaiso/217082,Ficha genérica AgendaPro,Confirmar comuna
+B - media,Barbería Alfa Men,Viña del Mar / Villa Alemana / Concón,Valparaíso 694 L14 (Viña); Av. Valparaíso 407 (V. Alemana),AgendaPro + TIMIFY (Concón),https://agendapro.com/mp/cl/pl/barberia-alfa-men-vina-del-mar/40741,Cadena con 3 locales y 2 sistemas distintos: unificar en uno,Cliente grande: plan multi-sucursal
+B - media,Barber Club Viña,Viña del Mar,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/pl/barber-club-vina-vina-del-mar/40697,Ficha genérica AgendaPro,
+B - media,Chic&Barber,Viña del Mar,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/pl/chic-barber-vina-del-mar/212207,Ficha genérica AgendaPro,
+B - media,Barber Company GS,Viña del Mar,Por confirmar,AgendaPro (sitio AgendaPro),https://barbercompany.site.agendapro.com/cl/sucursal/117060,Usa el sitio plantilla de AgendaPro: ofrecer diseño propio,
+B - media,Barbería Black Sheep,Viña del Mar,"Von Schroeder 229, local 1",AgendaPro,https://agendapro.com/mp/cl/barberias-vina-del-mar,Ficha genérica AgendaPro,Ofrece barbería móvil
+B - media,Lion Barbershop Viña,Viña del Mar,Por confirmar,AgendaPro,https://agendapro.com/site/cl/barberiadelionbarbershop/456819,Solo 7 reseñas en AgendaPro: ofrecer flujo de reseñas Google,
+B - media,Único Barber Club,Viña del Mar,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/pl/barberia-y-peluqueria-unico-barber-club-vina-del-mar/212433,Ficha genérica AgendaPro,
+B - media,ADI Barber Studio,Viña del Mar,3 Norte 215,AgendaPro,https://agendapro.com/mp/cl/barberias-vina-del-mar,Ficha genérica AgendaPro,
+B - media,Barbería Ferraza,Viña del Mar,"Libertad 63, local 28",AgendaPro + Fresha,https://www.fresha.com/a/ferraza-salon-vina-del-mar-vina-del-mar-avenida-libertad-63-zf53zkqc,Paga o mantiene 2 plataformas: unificar,
+B - media,Sin Fronteras Barbershop,Concón,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/pl/sin-fronteras-barbershop-concon/41959,Ficha genérica AgendaPro,Abre también domingo
+B - media,Texas Barber Club,Concón,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/pl/texas-barber-club-concon/41915,Ficha genérica AgendaPro,
+B - media,Clandestins,Concón,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/pl/clandestins-concon/41914,Ficha genérica AgendaPro,
+B - media,Barbería W,Concón,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/pl/barberia-w-concon/212482,Ficha genérica AgendaPro,
+B - media,Lions Barber Shop,Villa Alemana,"Av. Valparaíso 638, local 3A",AgendaPro,https://agendapro.com/mp/cl/barberias-villa-alemana,Ficha genérica AgendaPro,
+B - media,Casa Pichara,Villa Alemana,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/pl/casa-pichara-villa-alemana/40465,Ficha genérica AgendaPro,
+B - media,Platino Studio Barbershop,Quintero,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/barberias-region-de-valparaiso,Ficha genérica AgendaPro,
+B - media,OTTO Barbería,Quillota,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/barberias-quillota,Ficha genérica AgendaPro,
+B - media,El Cortés Barbershop,Quillota,Mall Paseo Shopping Quillota,AgendaPro (sitio AgendaPro),https://elcortesbarbershop.site.agendapro.com/cl,Sitio plantilla AgendaPro,
+B - media,Barbería Sofía,Limache,Av. República 125,AgendaPro,https://agendapro.com/mp/cl/barberias-limache,Ficha genérica AgendaPro,
+B - media,Joker Studio,Limache,Av. República 634,AgendaPro,https://agendapro.com/mp/cl/barberias-limache,Ficha genérica AgendaPro,
+B - media,Barbería Imperio,San Antonio,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/pl/barberia-imperio-san-antonio/38678,Ficha genérica AgendaPro,
+B - media,Barbería Garrison's,San Antonio,Av. Chile 79,AgendaPro,https://agendapro.com/site/cl/barberiagarrisons/374901,Ficha genérica AgendaPro,
+B - media,El Club de la Navaja,San Antonio,Av. Chile 105,AgendaPro,https://agendapro.com/mp/cl/barberias-san-antonio,Concepto vintage/lujo: le calza una web con identidad propia,
+B - media,Barbería & Peluquería El Dominicano,Los Andes,Maipú 653,AgendaPro,https://agendapro.com/mp/cl/pl/barberia-peluqueria-el-dominicano-los-andes/212108,Ficha genérica AgendaPro,Abre hasta 21:30
+B - media,Peluquería y Barbería Bolero,Los Andes,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/pl/peluqueria-y-barberia-bolero-los-andes/36234,Ficha genérica AgendaPro,
+B - media,Pansho Style Barbershop,Los Andes,Av. Independencia 312,AgendaPro,https://agendapro.com/mp/cl/barberias-los-andes,Ficha genérica AgendaPro,
+B - media,Peluquería Shekan,Algarrobo,Por confirmar,AgendaPro,https://agendapro.com/mp/cl/barberias-algarrobo,Ficha genérica AgendaPro,
+C - baja (referencia),D'Jones Barber,Viña del Mar,Villanelo 279,Web propia + AgendaPro,https://www.djonesbarberia.cl/,Ya tiene web hecha por agencia (Synaptech). Referencia de lo que ofrece la competencia local,"Vende American Crew, Layrite, Suavecito"
+C - baja (referencia),Mapu Barber Shop,Valparaíso + Viña del Mar,Blanco 974 L01 (Valpo); 1 Oriente 876 (Viña),Web con tienda + AgendaPro,https://mapubarbershop.cl/,"2 sucursales, tienda online y AgendaPro: el referente premium de la zona","Venderle solo marketing, no la app"
+C - baja (referencia),Epoca Barber Antique,Quillota + Limache,Castro 170 (Quillota); Serrano 260 (Limache),Sistema de reservas propio con dominio,https://reservas.epocabarber.cl/,Ya tiene subdominio de reservas con marca: el modelo que tú quieres vender,Estudiar su flujo como referencia
+C - baja (referencia),Humano Salón Barber,Viña del Mar,Por confirmar,Web propia + AgendaPro,https://humanosalonbarber.cl/,Ya digitalizado,Referencia
+C - baja (referencia),Studio Concón,Concón,Por confirmar,Web propia + sitio AgendaPro,https://www.studioconcon.cl/barberia-2/,Ya digitalizado,Referencia
+C - baja (referencia),Locos Salón Integral,San Felipe,Arturo Prat 740,Web propia con reserva,https://locosbarber.cl/,Ya digitalizado,Referencia
