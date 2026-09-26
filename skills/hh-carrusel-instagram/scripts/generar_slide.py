@@ -771,5 +771,130 @@ def destello(d, x, y, r, color):
         pts.append((x + math.cos(a) * rr, y + math.sin(a) * rr))
     d.polygon(pts, fill=color)
 
+# =====================================================================
+#  V4: FAMILIA D (oscuro con textura, gráfico, íconos, papel arrugado,
+#      lead magnet en libro 3D)
+# =====================================================================
+
+def textura_oscura(img, fuerza=0.09):
+    """Grano fotográfico marcado, típico de la familia D. Aplícalo sobre fondo_noche/fondo_negro/fondo_vino."""
+    g = Image.effect_noise(img.size, 70).convert("L").filter(ImageFilter.GaussianBlur(0.6))
+    return Image.blend(img, Image.merge("RGB", (g, g, g)), fuerza)
+
+def brillo(img, x, y, r, color=(200, 0, 0), alpha=150):
+    """Resplandor difuso puntual (punto del gráfico, detrás del libro del CTA, etc.)."""
+    capa = Image.new("L", img.size, 0)
+    ImageDraw.Draw(capa).ellipse((x - r, y - r, x + r, y + r), fill=alpha)
+    img.paste(Image.new("RGB", img.size, color), (0, 0), capa.filter(ImageFilter.GaussianBlur(r * 0.6)))
+
+def papel_arrugado(semilla=5):
+    """D5: papel gris claro con pliegues suaves, 100 % procedural."""
+    import random as _r
+    _r.seed(semilla)
+    luz = Image.new("L", (ANCHO, ALTO), 128)
+    d = ImageDraw.Draw(luz)
+    for _ in range(26):
+        x0, y0 = _r.randint(-200, ANCHO + 200), _r.randint(-200, ALTO + 200)
+        ang = _r.uniform(0, math.pi); L = _r.randint(400, 1400)
+        x1, y1 = x0 + math.cos(ang) * L, y0 + math.sin(ang) * L
+        nx, ny = -math.sin(ang) * 6, math.cos(ang) * 6
+        d.line((x0, y0, x1, y1), fill=175, width=10)
+        d.line((x0 + nx, y0 + ny, x1 + nx, y1 + ny), fill=85, width=8)
+    for _ in range(40):
+        d.polygon([(_r.randint(0, ANCHO), _r.randint(0, ALTO)) for _ in range(3)], fill=_r.randint(120, 136))
+    luz = np.array(luz.filter(ImageFilter.GaussianBlur(14)), float) - 128
+    img = Image.fromarray(np.clip(232 + luz * 0.7, 0, 255).astype("uint8")).convert("RGB")
+    return _grano(img, 0.05)
+
+def grafico_curva(img, ox, oy, ancho, alto, etiqueta="Resultado", etiqueta_base=None, color_linea=(230, 230, 235),
+                  color_ejes="#6B6F7A", color_txt=BLANCO):
+    """D2: gráfico ILUSTRATIVO (sin cifras) de una curva que sube hasta un punto rojo con brillo.
+    etiqueta_base: texto opcional para una línea plana de comparación."""
+    d = ImageDraw.Draw(img)
+    d.line((ox, oy - alto, ox, oy), fill=color_ejes, width=3); d.line((ox, oy, ox + ancho, oy), fill=color_ejes, width=3)
+    pts = [(ox + ancho * t, oy - 20 - alto * 0.82 * (t ** 2.2)) for t in [i / 60 for i in range(61)]]
+    d.line(pts, fill=color_linea, width=6, joint="curve")
+    ex, ey = pts[-1]
+    brillo(img, ex, ey, 60)
+    d = ImageDraw.Draw(img)
+    d.ellipse((ex - 16, ey - 16, ex + 16, ey + 16), fill=ROJO, outline=BLANCO, width=3)
+    fl = serif_fina(40)
+    for i, l in enumerate(etiqueta.split("\n")):
+        d.text((ex - d.textlength(l, font=fl) / 2, ey - 120 + i * 42), l, font=fl, fill=color_txt)
+    if etiqueta_base:
+        f = inter(500, 26)
+        d.line((ox + 10, oy - 30, ox + ancho, oy - 45), fill=color_ejes, width=3)
+        d.text((ox + ancho - d.textlength(etiqueta_base, font=f), oy - 85), etiqueta_base, font=f, fill=color_ejes)
+
+def lineas_diagonales(d, ys, color="#2A2F3A"):
+    """D3: separadores con quiebre diagonal (estética de circuito) a las alturas ys."""
+    for y0 in ys:
+        d.line([(0, y0 + 40), (560, y0 + 40), (660, y0 - 40), (ANCHO, y0 - 40)], fill=color, width=3, joint="curve")
+
+_OSC = (10, 10, 14)
+def icono_grabar(d, x, y, s, c=ROJO):
+    d.ellipse((x - s, y - s, x + s, y + s), fill=c)
+    for i in range(5):
+        a = i * 2 * math.pi / 5 - math.pi / 2
+        px, py = x + math.cos(a) * s * 0.55, y + math.sin(a) * s * 0.55
+        d.ellipse((px - s * 0.2, py - s * 0.2, px + s * 0.2, py + s * 0.2), fill=_OSC)
+def icono_editar(d, x, y, s, c=ROJO):
+    d.rounded_rectangle((x - s, y - s * 0.6, x + s, y + s * 0.6), radius=8, fill=c)
+    for i in range(4):
+        xx = x - s * 0.8 + i * s * 0.53
+        d.rectangle((xx, y - s * 0.5, xx + s * 0.18, y - s * 0.32), fill=_OSC)
+        d.rectangle((xx, y + s * 0.32, xx + s * 0.18, y + s * 0.5), fill=_OSC)
+    d.rectangle((x - 5, y - s, x + 5, y + s), fill=c)
+def icono_sumar(d, x, y, s, c=ROJO):
+    d.rounded_rectangle((x - s, y - s, x + s, y + s), radius=14, fill=c)
+    d.rectangle((x - s * 0.5, y - 6, x + s * 0.5, y + 6), fill=_OSC)
+    d.rectangle((x - 6, y - s * 0.5, x + 6, y + s * 0.5), fill=_OSC)
+def icono_carpeta(d, x, y, s, c=BLANCO):
+    d.polygon([(x - s, y - s * 0.7), (x - s * 0.2, y - s * 0.7), (x, y - s * 0.45), (x + s, y - s * 0.45),
+               (x + s, y + s * 0.75), (x - s, y + s * 0.75)], fill=c)
+def check_circulo(d, x, y, r, bg="#58585C", fg=BLANCO):
+    d.ellipse((x - r, y - r, x + r, y + r), fill=bg)
+    d.line([(x - r * 0.45, y), (x - r * 0.1, y + r * 0.38), (x + r * 0.5, y - r * 0.35)], fill=fg, width=6, joint="curve")
+
+def libro_tapa(numero, titulo, sub="PARA INSTAGRAM", w=440, h=600, color_num=(235, 30, 36)):
+    """D1: tapa de un PDF/ebook para el lead magnet (número grande + título en 2–3 líneas + subtítulo)."""
+    tapa = Image.new("RGB", (w, h), (14, 14, 18))
+    brillo(tapa, w * 0.5, h * 0.35, w * 0.55, (150, 0, 10), 180)
+    d = ImageDraw.Draw(tapa)
+    f1 = inter(900, 150)
+    d.text(((w - d.textlength(numero, font=f1)) / 2, 150), numero, font=f1, fill=color_num)
+    fy = 320
+    for l in titulo.split("\n"):
+        f2 = inter(900, 50)
+        d.text(((w - d.textlength(l, font=f2)) / 2, fy), l, font=f2, fill=BLANCO); fy += 58
+    f3 = inter(700, 22)
+    d.text(((w - d.textlength(sub, font=f3)) / 2, h - 70), sub, font=f3, fill="#C9C9CC")
+    d.line((w * 0.3, h - 88, w * 0.7, h - 88), fill=color_num, width=2)
+    lg = Image.open(os.path.join(LOGOS, "logo_hh_blanco.png")).convert("RGBA"); lg = lg.resize((60, int(lg.height * 60 / lg.width)))
+    tapa.paste(lg, ((w - 60) // 2, 60), lg)
+    sombra = Image.new("L", (w, h), 0); ImageDraw.Draw(sombra).rectangle((0, 0, 26, h), fill=120)
+    tapa.paste(Image.new("RGB", (w, h), (0, 0, 0)), (0, 0), sombra.filter(ImageFilter.GaussianBlur(8)))
+    return textura_oscura(tapa, 0.05)
+
+def pegar_libro(img, tapa, x, y, texto_lomo="", lomo=46):
+    """D1: monta la tapa como libro 3D (lomo en perspectiva + sombra)."""
+    w, h = tapa.size
+    sh = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    ImageDraw.Draw(sh).rectangle((x - lomo + 20, y + 30, x + w + 30, y + h + 30), fill=(0, 0, 0, 170))
+    img.paste(Image.alpha_composite(img.convert("RGBA"), sh.filter(ImageFilter.GaussianBlur(28))).convert("RGB"))
+    ImageDraw.Draw(img).polygon([(x - lomo, y + 14), (x, y), (x, y + h), (x - lomo, y + h - 14)], fill=(28, 6, 10))
+    img.paste(tapa, (x, y))
+    if texto_lomo:
+        t = Image.new("RGBA", (h - 60, lomo - 12), (0, 0, 0, 0))
+        ImageDraw.Draw(t).text((20, 2), texto_lomo, font=inter(800, 22), fill=(235, 30, 36, 255))
+        t = t.rotate(90, expand=True)
+        img.paste(t, (x - lomo + 8, y + 30), t)
+
+def flecha_abajo(d, cx_, y_top, alto=270, ancho=260, color=ROJO):
+    """D1: flecha roja grande hacia abajo (apunta a los comentarios)."""
+    a = ancho / 2; c = ancho * 0.23
+    d.polygon([(cx_ - c, y_top), (cx_ + c, y_top), (cx_ + c, y_top + alto * 0.45), (cx_ + a, y_top + alto * 0.45),
+               (cx_, y_top + alto), (cx_ - a, y_top + alto * 0.45), (cx_ - c, y_top + alto * 0.45)], fill=color)
+
 if __name__ == "__main__":
     print("Módulo de utilidades — importar, no ejecutar directo.")

@@ -1,9 +1,9 @@
 ---
 name: hh-carrusel-instagram
-description: Genera carruseles de Instagram para HH Studio Creativo con una biblioteca de 18 formatos de slide y un sistema de paletas guardadas (vino + noche, crema + azul, rosa + celeste, foco clásico; Inter + serif cursiva; recuadros, tachados, comparaciones, frases fragmentadas) que elige y combina según el tema, rubro y nicho de forma ordenada, con vista previa de 3 versiones de color antes de entregar y CTA obligatorio ("Comenta PALABRA" o "Guarda este post"). Úsala SIEMPRE que Herberth pida un carrusel, post de varias láminas, o contenido tipo "swipe" para @hh.condireccion o para un cliente de HH, incluso si solo dice "hazme un carrusel sobre X" sin más detalle. También aplícala si pide "el mismo estilo del carrusel de siempre", "un carrusel como los que ya hacemos" o "usa la skill del carrusel". No apliques la paleta de HH a piezas de un cliente salvo que se indique explícitamente que es para HH.
+description: Genera carruseles de Instagram para HH Studio Creativo (6–8 slides, 7 por defecto) con una biblioteca de 23 formatos en 4 familias (foco, editorial, notas y tarjetas, oscuro con textura) y paletas guardadas (vino + noche, crema + azul, rosa + celeste, foco clásico). Decide por su cuenta qué familia y diseño usar según el tema, rubro y nicho, manteniendo el carrusel ordenado (una familia dominante), muestra vista previa en 3 versiones de color antes de entregar y cierra con CTA obligatorio (Comenta PALABRA, Guarda este post o Comenta + PDF). Úsala SIEMPRE que Herberth pida un carrusel, post de varias láminas, o contenido tipo "swipe" para @hh.condireccion o para un cliente de HH, incluso si solo dice "hazme un carrusel sobre X" sin más detalle. También aplícala si pide "el mismo estilo del carrusel de siempre", "un carrusel como los que ya hacemos" o "usa la skill del carrusel". No apliques la paleta de HH a piezas de un cliente salvo que se indique explícitamente que es para HH.
 ---
 
-# Carrusel HH Studio Creativo — v3.2 (formatos + paletas)
+# Carrusel HH Studio Creativo — v4 (skill general)
 
 Produce carruseles de Instagram terminados en PNG (1080x1350) para HH Studio Creativo (@hh.condireccion). La skill no es una plantilla: es una **biblioteca de formatos de slide**, un **sistema de paletas** y un **criterio para elegirlos** según el tema. Los formatos definen la composición de cada slide y las paletas definen los colores, tonos y sombras. Son independientes: cualquier formato (incluidos los que Herberth mande en el futuro) se puede vestir con cualquier paleta guardada. Cada carrusel debe verse distinto al anterior sin dejar de ser reconocible como HH.
 
@@ -11,8 +11,9 @@ Herberth va a seguir mandando referencias y feedback. Cuando lo haga, adapta lo 
 
 ## Flujo obligatorio
 
-1. **Decidir** (sección "Cómo elegir"): lee el tema, rubro, nicho, audiencia y objetivo. Elige familia visual, formatos por slide, tipografía de acento y palabra del CTA. Si Herberth ya indicó algo (un formato, una fuente, un color), eso manda.
-2. **Guion**: texto exacto de cada lámina, con el formato elegido y por qué.
+0. **Recibir el pedido**: cuando Herberth diga "necesito un carrusel sobre [tema/nicho]", confírmale en una línea que lo vas a crear y **no le preguntes por diseño**: esa decisión es tuya. Solo pregunta si falta algo imprescindible (para quién es, si no se deduce). **Cantidad de slides**: la indica Herberth; si no la indica, usa **7**. **Máximo 8**, nunca más (más largo cansa).
+1. **Decidir el diseño** (sección "Cómo elegir"): pregúntate *"¿con qué diseño lo hago y cómo se ve ordenado?"*. Elige **una familia dominante**, la secuencia de formatos, la tipografía de acento, el tipo de CTA y la palabra. Explica la decisión en 2–3 líneas en la vista previa. Si Herberth indicó algo (un formato, una fuente, un color), eso manda.
+2. **Guion**: texto exacto de cada lámina, con el formato elegido.
 3. **Vista previa en 3 versiones**: genera el carrusel con **3 paletas distintas** (la misma estructura y el mismo texto; algunas versiones pueden compartir superficies si así se ve mejor). Arma una hoja de miniaturas por versión con `vista_previa(...)` y únelas en una sola imagen rotulada con `comparar_versiones(...)`. Entrégale a Herberth **solo esa imagen**, junto con el guion resumido (una línea por slide, con el ID de formato), qué carácter tiene cada versión, tu recomendación (una sola) y el entregable que promete el CTA. Luego **detente y espera**.
 4. **Ajustar**: Herberth puede elegir una versión, mezclar ("portada de B con desarrollo de A") o pedir cambios. Corrige y vuelve a mostrar la vista previa.
 5. **Entregar**: solo cuando Herberth diga "confirmo" (o equivalente: "dale", "ok, mándalos") **e indique qué versión**, entrega los PNG en alta de esa versión, en orden, con el caption.
@@ -24,7 +25,7 @@ Nunca entregues los slides finales antes de la confirmación. La excepción es q
 - **Rojo `#FE0000`** como color de acento de HH: palabras clave, tachados, etiquetas, números y líneas. **En superficies grandes (fondos completos) no se usa el rojo puro** porque resulta chillón: usa `fondo_vino()` o `fondo_rojo_profundo()`.
 - **Inter** como tipografía base de lectura (`inter(peso, tamaño)`, pesos 400/500/700/800/900).
 - **Logo HH** en alguna posición de la lámina (portada, explicaciones y cierre como mínimo).
-- **CTA final "Comenta PALABRA"** (ver sección CTA).
+- **CTA final obligatorio** (Comenta PALABRA, Guarda este post o Comenta + PDF; ver sección CTA).
 - **Voz HH**: tuteo, frases cortas, datos concretos, cero lenguaje de anuncio y nada inventado presentado como real.
 
 Todo lo demás (fondo, tipografía de acento, alineación, formato de cada slide) se elige por carrusel.
@@ -88,12 +89,14 @@ Cómo usarlas:
 - Titulares en frase normal (mayúscula inicial), salvo etiquetas cortas tipo "NO DIGAS:".
 - Montserrat y League Gothic quedan en `assets/fonts/` solo por compatibilidad. No las uses salvo que Herberth las pida.
 
-## Orden y coherencia (obligatorio)
+## Orden y coherencia (obligatorio, la regla más importante)
 
-Herberth prefiere carruseles **ordenados**: que se note un sistema y que no maree. Por eso:
+Herberth quiere carruseles **ordenados**: se empieza de una forma y se sigue con diseños parecidos, que no cambien por completo de un slide a otro. Las pruebas donde cada slide tenía un formato distinto (ideas, perfumería, fútbol) fueron **experimentos para aprender formatos, no el resultado final**. Por eso:
+- **Una familia dominante** (A, B, C o D) en al menos **5 de 7 slides** (o 6 de 8). Los slides de la familia comparten fondo, tipografía, márgenes y ubicación de títulos.
+- **Excepciones: como máximo 1–2 slides** de otra familia, y **solo si el contenido lo amerita** (por ejemplo, una lista densa que pide papel, una comparación con foto, o el CTA con PDF). Si no hay una razón de contenido, no cambies de familia.
 - **Superficies con rol claro**: una superficie para la portada, una para el desarrollo, como máximo **un** slide de contraste (papel) y, si hace falta impacto, algún slide en negro plano. El CTA elige la superficie que mejor lo haga destacar (no tiene que ser igual a la portada). Nada de un fondo distinto en cada slide sin motivo.
 - **Una sola alineación** en todo el carrusel (todo a la izquierda o todo centrado). El logo y el contador siempre en la misma posición.
-- **Máximo 4–5 IDs de formato distintos** por carrusel. La variedad viene del contenido y de la paleta, no de cambiar el diseño en cada lámina.
+- **Máximo 4 IDs de formato distintos** por carrusel (sin contar el CTA). Repetir un mismo formato con otro contenido es correcto y deseable: la variedad viene del contenido y de la paleta, no de cambiar el diseño en cada lámina.
 - Entre carruseles sí se rota: cambia la paleta, el formato de portada o la secuencia respecto al anterior, pero dentro de cada carrusel hay consistencia.
 
 ## Biblioteca de formatos de slide
@@ -136,6 +139,19 @@ Ejemplo completo: `ejemplos/perfumes_formatos_c.py`. Funciones: `tarjeta`, `tarj
 | **C4** | CTA "Guarda este post" | "Guarda este" + **post** en recuadro + `destello` + "y comenta [algo simple] para [la parte II / etc.]" + foto en marco redondeado | Cierre para contenido liviano, **sin entregable** (ver CTA) |
 | **C5** | Notas iPhone en lista | Fondo de cielo + logo centrado arriba + `tarjeta` blanca con `barra_notas(estilo="iconos")`, un subtítulo rojo y 4–6 frases numeradas + fila de íconos abajo | Listas de frases o ideas para copiar |
 
+### Familia D: Oscuro con textura (referencias aprobadas en sept. 2026)
+Ejemplo: `ejemplos/futbol_formatos_d.py` (ojo: ese ejemplo mezcla formatos a propósito porque era una prueba). Funciones: `textura_oscura`, `brillo`, `grafico_curva`, `lineas_diagonales`, `icono_grabar`, `icono_editar`, `icono_sumar`, `icono_carpeta`, `check_circulo`, `papel_arrugado`, `libro_tapa`, `pegar_libro`, `flecha_abajo`.
+
+| ID | Formato | Composición | Sirve para |
+|---|---|---|---|
+| **D1** | CTA con lead magnet (PDF) | Fondo oscuro con `brillo` rojo, libro 3D (`libro_tapa` + `pegar_libro`) arriba, "COMENTA **PALABRA** y te mando el PDF" en Inter 900 y `flecha_abajo` roja grande | Cierre cuando se regala un documento (ver CTA) |
+| **D2** | Titular + gráfico | Titular en MAYÚSCULAS Inter 900 con una palabra en serif cursiva de color, `grafico_curva` **ilustrativo (sin cifras inventadas)** con punto rojo brillante, y abajo "Aquí tienes cómo… en *N pasos* →" | Portada que muestra una tendencia o una comparación |
+| **D3** | Lista 01–04 con líneas | Números Inter 900 rojos grandes + título serif cursiva + descripción de una línea, separados por `lineas_diagonales` | Explicar 3–4 tipos, formatos o pasos |
+| **D4** | Paso con íconos | "PASO X:" Inter 900 + línea serif con palabra roja, fila de 3 íconos rojos y uno blanco grande, texto abajo con palabra serif roja | Un paso concreto de un proceso |
+| **D5** | Papel arrugado con checks | `papel_arrugado`, logo arriba, barra gris con título en mayúsculas blancas, 3 ítems con `check_circulo` | Preguntas o checklist cortos (slide de contraste) |
+
+Superficies de la familia D: `textura_oscura(fondo_noche(...))` para el desarrollo; `textura_oscura(fondo_negro())` para el slide de máximo impacto (a menudo el CTA D1); portada en `fondo_noche`, `fondo_hh` o `fondo_vino` según la paleta.
+
 ## Fotos y fondos sin fotos
 
 - **Fotos reales**: lo mejor es material de Herberth o del cliente (`gradar_foto_hh` para portadas o `foto_cover` + `pegar_redondeado` para marcos).
@@ -146,14 +162,20 @@ Ejemplo completo: `ejemplos/perfumes_formatos_c.py`. Funciones: `tarjeta`, `tarj
 
 Antes de decidir, responde internamente estas preguntas:
 
+0. **¿Qué familia dominante le queda al tema?** (primero esto, después los formatos)
+   - **A · Foco**: negocios, servicios, marketing, web, IA, tecnología. Argumentativo y directo.
+   - **B · Editorial**: opinión, frases citables, tendencias, contenido para creadores. Tipográfico y con impacto.
+   - **C · Notas y tarjetas**: belleza, lifestyle, perfumería, moda, bienestar, listas de frases o plantillas. Liviano y cercano.
+   - **D · Oscuro con textura**: deporte, storytelling, guías paso a paso, nocturno, contenido intenso. Dramático y energético.
+   Luego elige los formatos **dentro de esa familia**, y recurre a otra solo para 1–2 slides que lo necesiten.
 1. **¿Qué tipo de contenido es?**
-   - Educativo o paso a paso → A5, A6, A4 (Foco) o B3.
+   - Educativo o paso a paso → A5, A6, A4, B3, D3 o D4.
    - Opinión, mito o polémica → A2, B5, B4.
    - Valor descargable (ideas, recursos, plantillas) → B2 + B3, C1 o C5.
    - Ejemplos con explicación ("por qué funciona") → C2.
    - Antes y después de un mensaje o una pieza → C3 o B4.
    - Diagnóstico del lector ("¿te pasa esto?") → A3, A4.
-   - Tendencia o novedad → B1.
+   - Tendencia o novedad → B1 o D2.
    - Venta de un servicio de HH → A1, A3, A6 y cierre A7 + A8.
 2. **¿Qué tono pide el rubro o nicho?**
    - Tecnología, servicios, B2B, legal o finanzas → `crema_azul` o `foco_clasico`, Inter dominante y serif mínima.
@@ -165,18 +187,24 @@ Antes de decidir, responde internamente estas preguntas:
 4. **¿Qué se usó en los carruseles anteriores?** Revisa la conversación y la carpeta de trabajo. Evita repetir la misma familia dominante, el mismo formato de portada y la misma secuencia de formatos del último carrusel.
 
 Reglas de mezcla:
-- **Carrusel puro**: una sola familia. Conviene cuando el tema es muy homogéneo o el nicho pide una estética clara.
-- **Carrusel mixto** (el más común): 2 familias, por ejemplo portada B1 → desarrollo Foco → frase B5 → CTA.
-- **Carrusel editorial**: un formato distinto por slide (como la prueba de ideas). Úsalo para contenido de alto valor o cuando el carrusel anterior fue muy homogéneo.
-- Nunca repitas el mismo ID de formato más de 2 veces en un carrusel, salvo listas que continúan (B3 de 1–15 y luego 16–30).
-- La portada define el tono. Elígela primero y construye el resto para que haga sentido con ella.
+- **Por defecto: carrusel de una familia** (portada, desarrollo y CTA de la misma familia), con 1–2 excepciones justificadas por el contenido.
+- **No** hagas carruseles con un formato distinto en cada slide: eso fue solo para las pruebas.
+- Un mismo formato se puede repetir en varios slides seguidos si el contenido lo pide (por ejemplo, 3 slides D3 o 3 slides A5); es preferible a cambiar de diseño sin motivo.
+- La portada define el tono. Elígela primero y construye el resto para que se vea como una serie.
+
+Ejemplos de secuencias ordenadas para 7 slides:
+- **A (negocios)**: A1 → A5 → A5 → A2 → A6 → A7 → A8.
+- **B (opinión)**: B1 → B5 → B4 → B4 → B3 (papel, excepción) → B5 → A8.
+- **C (lifestyle)**: C3 → C1 → C1 → C2 → C5 → C5 → C4.
+- **D (storytelling / deporte)**: D2 → D3 → D3 → D4 → D5 (papel, excepción) → D4 → D1.
 
 En la vista previa, indica siempre qué ID usa cada slide (por ejemplo: "1 B1 · 2 B2 · 3 A3 · …"), así Herberth puede pedir cambios por ID.
 
 ## CTA (obligatorio, siempre el último slide)
 
-Hay dos tipos. Elige según el contenido:
-- **"Comenta PALABRA"** (A8): cuando hay un entregable que regalar (checklist, guion, plantilla, PDF). Es el cierre por defecto para contenido de alto valor.
+Hay tres tipos. Elige según el contenido y, de preferencia, el de la familia dominante:
+- **"Comenta PALABRA"** (A8): cuando hay un entregable que regalar (checklist, guion, plantilla). Cierre por defecto para contenido de alto valor.
+- **"Comenta PALABRA y te mando el PDF"** (D1): cuando el regalo es un documento (guía, ebook, lista larga). Lleva el libro 3D con el título del PDF y la flecha roja hacia abajo.
 - **"Guarda este post"** (C4): cuando el contenido es más liviano y no hace falta entregar nada. Se puede sumar una acción simple ("y comenta tu favorito para la parte II").
 
 ### Detalle de "Comenta PALABRA"
@@ -193,6 +221,7 @@ Hay dos tipos. Elige según el contenido:
 - **Gráficos**: `caja_destacada`, `trazo_mano`, `flecha_curva`, `tarjeta_check`, `etiqueta_cta`, `boton_flecha`.
 - **Fondos**: `fondo_noche`, `fondo_vino`, `fondo_crema`, `fondo_rosa_celeste`, `fondo_celeste`, `fondo_rojo_profundo`, `fondo_radial`, `fondo_hh`, `fondo_papel`, `fondo_claro_puntos`, `fondo_resplandor`, `fondo_negro` (solo en slides muy densos) y `gradar_foto_hh`.
 - **Paletas**: `PALETAS[clave]` y `contador_color(img, n, total, color)`.
+- **Familia D**: `textura_oscura`, `brillo`, `grafico_curva`, `lineas_diagonales`, íconos (`icono_grabar`, `icono_editar`, `icono_sumar`, `icono_carpeta`), `check_circulo`, `papel_arrugado`, `libro_tapa`, `pegar_libro`, `flecha_abajo`.
 - **Familia C y fotos**: `tarjeta`, `tarjeta_desplazada`, `barra_notas`, `pastilla`, `flor`, `destello`, `foto_cover`, `pegar_redondeado`, `oscurecer_abajo`, `fondo_nubes`, `fondo_manchas`.
 - **Marca**: `logo_esquina`, `logo_centrado`, `pegar_logo` (variantes blanco, azul y negro).
 - **Meta**: `contador(img, n, total)`, `vista_previa(rutas, salida)` y `comparar_versiones(hojas, nombres, salida)`.
@@ -226,11 +255,13 @@ Revisa la hoja de miniaturas y cualquier slide dudoso a tamaño completo:
 
 ## Entregables
 
-- **Vista previa**: `comparacion_versiones.png` (3 paletas) + guion resumido con IDs + carácter de cada versión + tu recomendación + entregable del CTA.
+- **Vista previa**: `comparacion_versiones.png` (3 paletas con **la misma estructura y la misma familia**) + decisión de diseño (familia dominante y por qué) + guion resumido con IDs + carácter de cada versión + tu recomendación + entregable del CTA.
 - **Tras "confirmo" y la versión elegida**: `slide_01.png` … `slide_NN_cta.png` de esa versión, en orden, y el caption (máx. ~120 palabras, repite el CTA, 5–6 hashtags).
 - No prometas publicar en Instagram: Herberth sube los archivos.
 
 ## Registro de cambios
+
+- **v4 (sept. 2026) · skill general**: familia D (D1 CTA con PDF en libro 3D, D2 titular + gráfico ilustrativo, D3 lista 01–04 con líneas diagonales, D4 paso con íconos, D5 papel arrugado con checks) y tercer tipo de CTA "Comenta + PDF". Flujo final: Herberth pide el tema, Claude decide solo el diseño con **una familia dominante** (mín. 5 de 7 slides, máx. 1–2 excepciones justificadas, máx. 4 formatos distintos), 7 slides por defecto y máximo 8, vista previa en 3 paletas y entrega tras "confirmo". Las pruebas con un formato distinto por slide quedan como ejemplos de formatos, no como estilo final. Ejemplo en `ejemplos/futbol_formatos_d.py`.
 
 - **v3.2 (sept. 2026)**: familia C (C1 mini nota apilada, C2 nota iPhone con "por qué funciona", C3 comparación con foto aburre/vende, C4 CTA "Guarda este post", C5 notas iPhone en lista). CTA alternativo "Guarda" para contenido liviano. El CTA va por defecto en una superficie distinta a la portada. Recuadro destacado en azul noche (no rojo) sobre fondos claros. Fondos sin fotos: `fondo_nubes` y `fondo_manchas`. Pautas para fotos de Unsplash. Ejemplo en `ejemplos/perfumes_formatos_c.py`.
 
