@@ -1,14 +1,88 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
-@import url("https://db.onlinewebfonts.com/c/16e715573b2b3072037cf4ab26fc8bb8?family=SK+Reykjavik+Rounded+Regular");
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Rubik+Mono+One&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --font-heading: "SK Reykjavik Rounded Regular", "Varela Round", ui-rounded, system-ui, sans-serif;
+  --font-heading: "Anton", "Impact", "Arial Narrow Bold", sans-serif;
+  --font-wide: "Rubik Mono One", "Anton", sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-bg: #0b0b0c;
+  --color-bg-2: #111113;
+  --color-card: #151517;
+  --color-line: #242428;
+  --color-line-2: #34343a;
+  --color-muted: #8d8d95;
+  --color-text: #e9e9ec;
 }
 
 @layer base {
-  body {
-    @apply font-sans antialiased text-[#202020] bg-[#F7F7F7];
+  :root {
+    color-scheme: dark;
   }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply font-sans antialiased text-text bg-bg;
+  }
+  /* rejilla y2k de fondo */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+  :focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility bg-chrome {
+  background: linear-gradient(180deg, #ffffff 0%, #d8d8de 28%, #7c7c86 50%, #f4f4f7 62%, #a9a9b2 100%);
+}
+
+@utility text-chrome {
+  background: linear-gradient(180deg, #ffffff 0%, #d8d8de 28%, #7c7c86 50%, #f4f4f7 62%, #a9a9b2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility text-outline {
+  -webkit-text-stroke: 1.5px #cfcfd6;
+  color: transparent;
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@utility animate-ticker {
+  animation: ticker 30s linear infinite;
 }
