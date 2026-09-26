@@ -530,5 +530,97 @@ def vista_previa(rutas_png, salida, columnas=4, ancho_mini=360):
     hoja.save(salida)
     return salida
 
+# =====================================================================
+#  V3.1: SISTEMA DE PALETAS (aprobado por Herberth, sept. 2026)
+#  Cada paleta define 3 roles de fondo + colores de texto por rol.
+#  Los formatos (A1…B5) se dibujan leyendo estos roles, así cualquier
+#  estructura nueva se puede "vestir" con cualquier paleta.
+# =====================================================================
+
+def fondo_radial(c_centro, c_borde, centro=(0.4, 0.4), curva=1.4, grano=0.045, alcance=0.85):
+    """Degradado radial suave (centro -> bordes) con grano. Base de todas las paletas v3.1."""
+    yy, xx = np.mgrid[0:ALTO, 0:ANCHO]
+    d = np.sqrt(((xx / ANCHO) - centro[0]) ** 2 + (((yy / ALTO) - centro[1]) * ALTO / ANCHO) ** 2)
+    t = np.clip(d / alcance, 0, 1) ** curva
+    a, b = np.array(c_centro, float), np.array(c_borde, float)
+    img = Image.fromarray(np.clip(a + (b - a) * t[:, :, None], 0, 255).astype("uint8"))
+    g = Image.effect_noise((ANCHO, ALTO), 45).convert("L")
+    return Image.blend(img, Image.merge("RGB", (g, g, g)), grano)
+
+# Superficies (fondos completos). Mueve 'centro' en cada slide para dar ritmo.
+def fondo_noche(centro=(0.35, 0.4)):
+    """Reemplaza al negro plano: casi negro al centro, azul noche en los bordes."""
+    return fondo_radial((7, 8, 12), (12, 34, 64), centro=centro, curva=1.3, grano=0.05)
+
+def fondo_vino(centro=(0.3, 0.35)):
+    """Rojo vino profundo con sombra hacia los bordes (NO el rojo chillón)."""
+    return fondo_radial((150, 16, 34), (66, 6, 18), centro=centro, curva=1.2)
+
+def fondo_crema(centro=(0.3, 0.3)):
+    """Blanco cálido que se enfría hacia un azul muy suave en los bordes."""
+    return fondo_radial((248, 245, 240), (214, 224, 238), centro=centro, curva=1.3, grano=0.06)
+
+def fondo_rosa_celeste(centro=(0.35, 0.3)):
+    """Rosado suave al centro que pasa a celeste en los bordes."""
+    return fondo_radial((252, 214, 222), (206, 226, 246), centro=centro, curva=1.1, grano=0.05)
+
+def fondo_celeste(centro=(0.35, 0.4)):
+    """Celeste muy claro, para desarrollos luminosos."""
+    return fondo_radial((244, 248, 253), (200, 222, 244), centro=centro, curva=1.3, grano=0.05)
+
+def fondo_rojo_profundo(centro=(0.4, 0.4)):
+    """Rojo de marca oscurecido en los bordes, para portadas/CTA potentes sin gritar."""
+    return fondo_radial((214, 10, 18), (120, 4, 12), centro=centro, curva=1.3)
+
+# Estilos de texto por tipo de superficie
+_OSCURO = dict(txt=BLANCO, txt2=GRIS_TEXTO, crema=CREMA, acento=ROJO, logo="blanco", meta=GRIS_META)
+_CLARO = dict(txt=AZUL_NOCHE, txt2="#4A5A70", crema=AZUL_NOCHE, acento=ROJO, logo="azul", meta="#5B6B80")
+
+PALETAS = {
+    # tapa = portada y CTA (mismo fondo: abre y cierra igual)
+    # dev  = slides de desarrollo
+    # caja = (fondo, texto) del recuadro destacado y la etiqueta del CTA
+    # acento_tapa = color de la palabra destacada dentro del CTA
+    "vino_noche": dict(
+        nombre="Vino + noche", uso="bebidas, gastronomía, nocturno, eventos, cualquier tema cálido o intenso",
+        tapa=fondo_vino, tapa_txt=BLANCO, tapa_txt2="#F3D9DD", tapa_logo="blanco", tapa_meta="#F3D9DD",
+        caja=(AZUL_NOCHE, BLANCO), acento_tapa="#FFB3BE",
+        dev=fondo_noche, dev_estilo=_OSCURO),
+    "crema_azul": dict(
+        nombre="Crema + azul", uso="premium, corporativo, servicios, tecnología, legal, finanzas",
+        tapa=fondo_crema, tapa_txt=AZUL_NOCHE, tapa_txt2="#3B4E66", tapa_logo="azul", tapa_meta="#5B6B80",
+        caja=(AZUL_NOCHE, BLANCO), acento_tapa=ROJO,
+        dev=fondo_noche, dev_estilo=_OSCURO),
+    "rosa_celeste": dict(
+        nombre="Rosa + celeste", uso="belleza, lifestyle, bienestar, educación amable, feed más claro",
+        tapa=fondo_rosa_celeste, tapa_txt=AZUL_NOCHE, tapa_txt2="#3B4E66", tapa_logo="azul", tapa_meta="#5B6B80",
+        caja=(ROJO, BLANCO), acento_tapa=ROJO,
+        dev=fondo_celeste, dev_estilo=_CLARO),
+    "foco_clasico": dict(
+        nombre="Foco clásico (v2)", uso="marketing, web, IA, negocios: la estética original de HH",
+        tapa=lambda centro=(0.92, 0.08): fondo_hh(posicion=centro), tapa_txt=BLANCO, tapa_txt2=GRIS_TEXTO,
+        tapa_logo="blanco", tapa_meta=GRIS_META, caja=(ROJO, BLANCO), acento_tapa=ROJO,
+        dev=lambda centro=(0.9, 0.9): fondo_hh(posicion=centro, intensidad=0.75), dev_estilo=_OSCURO),
+}
+# Superficie de contraste común a todas: fondo_papel() (1 slide por carrusel, listas densas).
+
+def contador_color(img, n, total, color):
+    """Contador n/total con color explícito (para superficies de color o claras)."""
+    d = ImageDraw.Draw(img); t = f"{n}/{total}"; f = inter(500, 26)
+    d.text((ANCHO - M - d.textlength(t, font=f), ALTO - 90), t, font=f, fill=color)
+
+def comparar_versiones(hojas, nombres, salida):
+    """Apila varias vistas previas (una por paleta) con su rótulo, para elegir en una sola imagen."""
+    ims = [Image.open(h).convert("RGB") for h in hojas]
+    etq = 70
+    ancho = max(i.width for i in ims)
+    comp = Image.new("RGB", (ancho, sum(i.height + etq for i in ims)), (24, 24, 28))
+    d = ImageDraw.Draw(comp); y = 0
+    for n, im in zip(nombres, ims):
+        d.text((20, y + 18), n, font=inter(800, 34), fill=BLANCO)
+        comp.paste(im, (0, y + etq)); y += im.height + etq
+    comp.save(salida)
+    return salida
+
 if __name__ == "__main__":
     print("Módulo de utilidades — importar, no ejecutar directo.")

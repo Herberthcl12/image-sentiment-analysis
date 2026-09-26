@@ -1,11 +1,11 @@
 ---
 name: hh-carrusel-instagram
-description: Genera carruseles de Instagram para HH Studio Creativo con una biblioteca de 13 formatos de slide (azul noche con foco, negro con grano, resplandor rojo, papel claro; Inter + serif cursiva; recuadros, tachados, comparaciones, frases fragmentadas) que elige y mezcla según el tema, rubro y nicho, con vista previa en miniatura antes de entregar y CTA obligatorio "Comenta PALABRA". Úsala SIEMPRE que Herberth pida un carrusel, post de varias láminas, o contenido tipo "swipe" para @hh.condireccion o para un cliente de HH, incluso si solo dice "hazme un carrusel sobre X" sin más detalle. También aplícala si pide "el mismo estilo del carrusel de siempre", "un carrusel como los que ya hacemos" o "usa la skill del carrusel". No apliques la paleta de HH a piezas de un cliente salvo que se indique explícitamente que es para HH.
+description: Genera carruseles de Instagram para HH Studio Creativo con una biblioteca de 13 formatos de slide y un sistema de paletas guardadas (vino + noche, crema + azul, rosa + celeste, foco clásico; Inter + serif cursiva; recuadros, tachados, comparaciones, frases fragmentadas) que elige y combina según el tema, rubro y nicho de forma ordenada, con vista previa de 3 versiones de color antes de entregar y CTA obligatorio "Comenta PALABRA". Úsala SIEMPRE que Herberth pida un carrusel, post de varias láminas, o contenido tipo "swipe" para @hh.condireccion o para un cliente de HH, incluso si solo dice "hazme un carrusel sobre X" sin más detalle. También aplícala si pide "el mismo estilo del carrusel de siempre", "un carrusel como los que ya hacemos" o "usa la skill del carrusel". No apliques la paleta de HH a piezas de un cliente salvo que se indique explícitamente que es para HH.
 ---
 
-# Carrusel HH Studio Creativo — v3 (biblioteca de formatos)
+# Carrusel HH Studio Creativo — v3.1 (formatos + paletas)
 
-Produce carruseles de Instagram terminados en PNG (1080x1350) para HH Studio Creativo (@hh.condireccion). La skill no es una plantilla: es una **biblioteca de formatos de slide** más un **criterio para elegirlos y mezclarlos** según el tema. Cada carrusel debe verse distinto al anterior sin dejar de ser reconocible como HH.
+Produce carruseles de Instagram terminados en PNG (1080x1350) para HH Studio Creativo (@hh.condireccion). La skill no es una plantilla: es una **biblioteca de formatos de slide**, un **sistema de paletas** y un **criterio para elegirlos** según el tema. Los formatos definen la composición de cada slide y las paletas definen los colores, tonos y sombras. Son independientes: cualquier formato (incluidos los que Herberth mande en el futuro) se puede vestir con cualquier paleta guardada. Cada carrusel debe verse distinto al anterior sin dejar de ser reconocible como HH.
 
 Herberth va a seguir mandando referencias y feedback. Cuando lo haga, adapta lo nuevo a lo que ya existe (no lo reemplaces), propón el cambio concreto, y al aprobarlo agrégalo a la biblioteca y al "Registro de cambios".
 
@@ -13,15 +13,15 @@ Herberth va a seguir mandando referencias y feedback. Cuando lo haga, adapta lo 
 
 1. **Decidir** (sección "Cómo elegir"): lee el tema, rubro, nicho, audiencia y objetivo. Elige familia visual, formatos por slide, tipografía de acento y palabra del CTA. Si Herberth ya indicó algo (un formato, una fuente, un color), eso manda.
 2. **Guion**: texto exacto de cada lámina, con el formato elegido y por qué.
-3. **Vista previa**: genera todas las láminas y arma la hoja de miniaturas con `vista_previa([...], "vista_previa.png")`. Entrégale a Herberth **solo esa imagen**, junto con el guion resumido (una línea por slide), la decisión de diseño en 3–4 líneas y el entregable que promete el CTA. Luego **detente y espera**.
-4. **Ajustar**: si Herberth pide cambios, corrige y vuelve a mostrar la vista previa.
-5. **Entregar**: solo cuando Herberth diga "confirmo" (o equivalente: "dale", "ok, mándalos"), entrega todos los PNG en orden y el caption.
+3. **Vista previa en 3 versiones**: genera el carrusel con **3 paletas distintas** (la misma estructura y el mismo texto; algunas versiones pueden compartir superficies si así se ve mejor). Arma una hoja de miniaturas por versión con `vista_previa(...)` y únelas en una sola imagen rotulada con `comparar_versiones(...)`. Entrégale a Herberth **solo esa imagen**, junto con el guion resumido (una línea por slide, con el ID de formato), qué carácter tiene cada versión, tu recomendación (una sola) y el entregable que promete el CTA. Luego **detente y espera**.
+4. **Ajustar**: Herberth puede elegir una versión, mezclar ("portada de B con desarrollo de A") o pedir cambios. Corrige y vuelve a mostrar la vista previa.
+5. **Entregar**: solo cuando Herberth diga "confirmo" (o equivalente: "dale", "ok, mándalos") **e indique qué versión**, entrega los PNG en alta de esa versión, en orden, con el caption.
 
 Nunca entregues los slides finales antes de la confirmación. La excepción es que Herberth pida explícitamente saltarse la vista previa.
 
 ## Identidad fija (lo que nunca cambia)
 
-- **Rojo `#FE0000`** como único color de acento de HH.
+- **Rojo `#FE0000`** como color de acento de HH: palabras clave, tachados, etiquetas, números y líneas. **En superficies grandes (fondos completos) no se usa el rojo puro** porque resulta chillón: usa `fondo_vino()` o `fondo_rojo_profundo()`.
 - **Inter** como tipografía base de lectura (`inter(peso, tamaño)`, pesos 400/500/700/800/900).
 - **Logo HH** en alguna posición de la lámina (portada, explicaciones y cierre como mínimo).
 - **CTA final "Comenta PALABRA"** (ver sección CTA).
@@ -42,14 +42,39 @@ Todo lo demás (fondo, tipografía de acento, alineación, formato de cada slide
 | Grises derivados | `GRIS_TEXTO #C9D0DA`, `GRIS_APAGADO #3B4E66`, `GRIS_META #AEB6C2` | Cuerpo, inactivos y contador |
 
 Funciones de fondo (`scripts/generar_slide.py`):
+- `fondo_noche(centro)`: **reemplaza al negro plano**. Casi negro al centro que se funde en azul noche hacia los bordes. Mueve el `centro` en cada slide.
+- `fondo_vino(centro)`, `fondo_crema(centro)`, `fondo_rosa_celeste(centro)`, `fondo_celeste(centro)`, `fondo_rojo_profundo(centro)`: superficies de las paletas (ver "Sistema de paletas").
+- `fondo_radial(c_centro, c_borde, …)`: base para crear superficies nuevas con degradado y sombra.
 - `fondo_hh(posicion, radio, intensidad)`: azul noche con foco de luz azul. Rota la posición del foco en cada slide.
-- `fondo_negro()`: negro con grano fotográfico.
+- `fondo_negro()`: negro plano con grano. **Solo** si el slide tiene tanta información que cualquier degradado estorba; en todos los demás casos, `fondo_noche()`.
 - `fondo_resplandor(luz=(190,0,0))`: brillo rojo difuso detrás del centro, con grilla de puntos.
 - `fondo_papel()`: papel claro texturizado. Texto en `#111111`, logo negro.
 - `fondo_claro_puntos()`: blanco con grilla de puntos, para el checklist.
 - `gradar_foto_hh(ruta)`: si Herberth aporta una foto real, úsala como fondo, gradada al tono HH.
 
-Regla de mezcla: en un carrusel se pueden combinar hasta **3 fondos distintos**. Mínimo 2 slides seguidos con el mismo fondo, salvo que el contraste sea intencional (por ejemplo, un slide de papel entre dos negros para marcar un cambio de tema). El texto nunca va sobre el punto más brillante de un foco o resplandor.
+El texto nunca va sobre el punto más brillante de un foco o resplandor. Las reglas de cuántos fondos usar y con qué rol están en "Orden y coherencia".
+
+## Sistema de paletas
+
+Cada paleta define **roles de superficie**, no slides fijos:
+- **Tapa**: portada y CTA, con el mismo fondo para que el carrusel abra y cierre igual.
+- **Desarrollo**: todos los slides intermedios.
+- **Contraste** (opcional, 1 slide): `fondo_papel()`, común a todas las paletas, para listas densas.
+
+Además define los colores de texto de cada superficie, el recuadro destacado y la etiqueta del CTA (`caja`) y el color de la palabra destacada del CTA (`acento_tapa`). Están en `PALETAS` dentro de `scripts/generar_slide.py`:
+
+| Clave | Tapa | Desarrollo | Recuadro y etiqueta | Carácter y uso |
+|---|---|---|---|---|
+| `vino_noche` | Rojo vino profundo, con sombra | Noche (negro a azul) | Azul noche + blanco | Cálido e intenso: bebidas, gastronomía, nocturno, eventos |
+| `crema_azul` | Crema que se enfría a azul suave | Noche | Azul noche + blanco | Sobrio y elegante: premium, corporativo, servicios, tecnología |
+| `rosa_celeste` | Rosado que pasa a celeste | Celeste claro, texto azul noche | Rojo + blanco | Fresco y liviano: belleza, lifestyle, bienestar, feed claro |
+| `foco_clasico` | Azul noche con foco | Azul noche con foco suave | Rojo + blanco | La estética original de HH: marketing, web, IA, negocios |
+
+Cómo usarlas:
+- Dibuja cada formato leyendo los colores de la paleta (`P["tapa_txt"]`, `P["dev_estilo"]["txt"]`, `P["caja"]`, etc.) en vez de fijar colores a mano. Así el mismo guion sale en cualquier paleta con solo cambiar la clave. Ver `ejemplos/vinos_3_paletas.py`.
+- Para la vista previa, elige 3 paletas que tengan sentido para el tema: la que recomiendas y dos alternativas con otro carácter. Pueden compartir superficies (por ejemplo, dos con desarrollo noche).
+- Puedes crear paletas nuevas con `fondo_radial()` combinando colores de HH (azul noche, rojo profundo, blanco, crema, rosado, celeste). Evita el resplandor rojo sobre azul noche en portada y CTA: no le gusta a Herberth. Si una combinación nueva funciona y Herberth la aprueba, agrégala a `PALETAS` con nombre.
+- Cuando Herberth mande estructuras nuevas, adáptalas a estas paletas: las paletas se mantienen y la estructura cambia.
 
 ## Tipografía
 
@@ -61,6 +86,14 @@ Regla de mezcla: en un carrusel se pueden combinar hasta **3 fondos distintos**.
 - **Fuente temática opcional**: si el tema lo pide (bebidas, deporte, música, gastronomía, infantil…), puedes sumar **una** fuente display de Google Fonts con `fuente_tematica("Familia", peso, tamano=…)`, **solo en hook y sentencia**. Si no hay red o devuelve `None`, usa Inter 900 o serif como respaldo. Elige la fuente por lo que evoca, no por moda, y justifícala en la decisión de diseño.
 - Titulares en frase normal (mayúscula inicial), salvo etiquetas cortas tipo "NO DIGAS:".
 - Montserrat y League Gothic quedan en `assets/fonts/` solo por compatibilidad. No las uses salvo que Herberth las pida.
+
+## Orden y coherencia (obligatorio)
+
+Herberth prefiere carruseles **ordenados**: que se note un sistema y que no maree. Por eso:
+- **Superficies con rol fijo**: tapa (portada + CTA), desarrollo (el resto) y como máximo **un** slide de contraste (papel). Nada de un fondo distinto en cada slide.
+- **Una sola alineación** en todo el carrusel (todo a la izquierda o todo centrado). El logo y el contador siempre en la misma posición.
+- **Máximo 4–5 IDs de formato distintos** por carrusel. La variedad viene del contenido y de la paleta, no de cambiar el diseño en cada lámina.
+- Entre carruseles sí se rota: cambia la paleta, el formato de portada o la secuencia respecto al anterior, pero dentro de cada carrusel hay consistencia.
 
 ## Biblioteca de formatos de slide
 
@@ -79,11 +112,11 @@ Ejemplos completos: `ejemplos/carrusel_web_v2.py` y `ejemplos/agenda_ia_v2.py`.
 | **A8** | CTA | "Comenta" + `etiqueta_cta` + `texto_mixto` | Cierre (ver sección CTA) |
 
 ### Familia B: Editorial (referencias aprobadas en sept. 2026)
-Ejemplo completo: `ejemplos/formatos_mixtos_ideas.py`.
+Ejemplo completo: `ejemplos/formatos_mixtos_ideas.py`. Donde el ejemplo usa `fondo_negro()`, hoy corresponde `fondo_noche()`.
 
 | ID | Formato | Composición | Sirve para |
 |---|---|---|---|
-| **B1** | Resplandor | `fondo_resplandor`, texto centrado: línea Inter 800 + 1–2 líneas serif cursiva grandes + línea Inter, `boton_flecha` abajo, logo centrado arriba | Portada que se siente "tendencia", "lo nuevo", "esta semana" |
+| **B1** | Resplandor | *(No usar en portada ni CTA sobre azul noche.)* `fondo_resplandor`, texto centrado: línea Inter 800 + 1–2 líneas serif cursiva grandes + línea Inter, `boton_flecha` abajo, logo centrado arriba | Portada que se siente "tendencia", "lo nuevo", "esta semana" |
 | **B2** | Suma | `fondo_negro`, 2–4 líneas Inter 700 color crema, una línea roja vertical corta y el total en serif 800 rojo gigante, con una línea gris opcional debajo | Abrir o revelar una cifra: "X + Y + Z = total" |
 | **B3** | Lista en papel | `fondo_papel`, "Palabra Inter 900 + *Palabra serif roja*", regla negra, 10–15 ítems numerados Inter 500 31px, pie "1–15 \| TEMA" y logo negro | Entregar valor denso: ideas, plantillas, recursos |
 | **B4** | Comparación "No digas / Mejor di" | `fondo_negro`, etiqueta roja Inter 800, frase entre comillas Inter 800 blanca, nota en serif cursiva gris; línea roja horizontal al medio y el mismo esquema abajo | Contrastar lo que no funciona con lo que sí (copy, precios, atención, mensajes) |
@@ -103,9 +136,9 @@ Antes de decidir, responde internamente estas preguntas:
    - Tendencia o novedad → B1.
    - Venta de un servicio de HH → A1, A3, A6 y cierre A7 + A8.
 2. **¿Qué tono pide el rubro o nicho?**
-   - Tecnología, servicios, B2B, legal o finanzas → Familia Foco, Inter dominante y serif mínima.
-   - Gastronomía, bares, alcohol, eventos o nocturno → Familia Negro + resplandor rojo, serif 800 protagonista y, si suma, una fuente temática display (condensada, de cartel o de etiqueta).
-   - Moda, belleza, lifestyle o premium → Papel y Negro, `serif_fina`, más espacio negativo.
+   - Tecnología, servicios, B2B, legal o finanzas → `crema_azul` o `foco_clasico`, Inter dominante y serif mínima.
+   - Gastronomía, bares, alcohol, eventos o nocturno → paleta `vino_noche`, serif protagonista y, si suma, una fuente temática display (por ejemplo, Bodoni Moda para vinos).
+   - Moda, belleza, lifestyle o premium → `rosa_celeste` o `crema_azul`, `serif_fina` y más espacio negativo.
    - Creadores, streaming o marketing en redes → mezcla B1 + B5 + B3, serif 800 y frases fragmentadas.
    - Salud o bienestar → Foco y Papel, tono sereno, sin rojo agresivo en grandes superficies.
 3. **¿Cuánto texto tiene cada slide?** Mucho texto → fondo plano (Negro o Papel, o Foco con intensidad 0.7). Una frase → fondo con vida (Resplandor o Foco intenso).
@@ -133,9 +166,10 @@ En la vista previa, indica siempre qué ID usa cada slide (por ejemplo: "1 B1 ·
 
 - **Texto**: `inter`, `serif`, `serif_fina`, `fuente_tematica`, `lineas` (con `centrado=True`), `linea_mixta` (fuentes y colores mezclados, subrayado), `wrap`, `texto_mixto`, `texto_con_sombra`.
 - **Gráficos**: `caja_destacada`, `trazo_mano`, `flecha_curva`, `tarjeta_check`, `etiqueta_cta`, `boton_flecha`.
-- **Fondos**: `fondo_hh`, `fondo_negro`, `fondo_resplandor`, `fondo_papel`, `fondo_claro_puntos`, `gradar_foto_hh`.
+- **Fondos**: `fondo_noche`, `fondo_vino`, `fondo_crema`, `fondo_rosa_celeste`, `fondo_celeste`, `fondo_rojo_profundo`, `fondo_radial`, `fondo_hh`, `fondo_papel`, `fondo_claro_puntos`, `fondo_resplandor`, `fondo_negro` (solo en slides muy densos) y `gradar_foto_hh`.
+- **Paletas**: `PALETAS[clave]` y `contador_color(img, n, total, color)`.
 - **Marca**: `logo_esquina`, `logo_centrado`, `pegar_logo` (variantes blanco, azul y negro).
-- **Meta**: `contador(img, n, total)` y `vista_previa(rutas, salida)`.
+- **Meta**: `contador(img, n, total)`, `vista_previa(rutas, salida)` y `comparar_versiones(hojas, nombres, salida)`.
 
 Medidas: 1080x1350, margen lateral `M = 90`. Tamaños de referencia en los tres ejemplos.
 
@@ -166,11 +200,13 @@ Revisa la hoja de miniaturas y cualquier slide dudoso a tamaño completo:
 
 ## Entregables
 
-- **Vista previa**: `vista_previa.png` + guion resumido con IDs + decisión de diseño + entregable del CTA.
-- **Tras "confirmo"**: `slide_01.png` … `slide_NN_cta.png` en orden, y el caption (máx. ~120 palabras, repite el CTA, 5–6 hashtags).
+- **Vista previa**: `comparacion_versiones.png` (3 paletas) + guion resumido con IDs + carácter de cada versión + tu recomendación + entregable del CTA.
+- **Tras "confirmo" y la versión elegida**: `slide_01.png` … `slide_NN_cta.png` de esa versión, en orden, y el caption (máx. ~120 palabras, repite el CTA, 5–6 hashtags).
 - No prometas publicar en Instagram: Herberth sube los archivos.
 
 ## Registro de cambios
+
+- **v3.1 (sept. 2026)**: sistema de paletas separado de los formatos (`PALETAS`: vino_noche, crema_azul, rosa_celeste, foco_clasico) con superficies de degradado y sombra (`fondo_noche`, `fondo_vino`, `fondo_crema`, `fondo_rosa_celeste`, `fondo_celeste`, `fondo_rojo_profundo`, `fondo_radial`). El negro plano se reemplaza por `fondo_noche`. Nada de rojo puro en superficies grandes ni de resplandor rojo sobre azul en portada y CTA. Reglas de orden: roles de superficie, una alineación, máximo 4–5 formatos. La vista previa muestra 3 versiones de paleta (`comparar_versiones`). Ejemplo en `ejemplos/vinos_3_paletas.py`.
 
 - **v3 (sept. 2026)**: la skill pasa a ser una biblioteca de formatos (familia A Foco y familia B Editorial) con criterio propio para elegir y mezclar según el tema, rubro y nicho. Se suman Playfair Display Italic e Instrument Serif Italic como tipografías de acento, la descarga opcional de una fuente temática, los fondos negro con grano, resplandor rojo y papel, las funciones `linea_mixta`, `boton_flecha`, `logo_centrado` y `vista_previa`, y el flujo obligatorio de vista previa → "confirmo" → entrega. Ejemplos en `ejemplos/`.
 - **v2 (sept. 2026)**: Inter reemplaza a League Gothic y Montserrat. Fondo azul noche con foco rotativo, recuadro destacado, tachado a mano, secuencia con flecha, checklist claro, contador y CTA "Comenta PALABRA".
