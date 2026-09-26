@@ -1,179 +1,177 @@
 ---
 name: hh-carrusel-instagram
-description: Genera carruseles de Instagram con la identidad visual y estructura narrativa de HH Studio Creativo (estilo v2 con tipografía Inter, fondos azul noche con foco de luz, acento rojo, recuadros destacados, tachado a mano y CTA obligatorio "Comenta PALABRA"). Úsala SIEMPRE que Herberth pida un carrusel, post de varias láminas, o contenido tipo "swipe" para @hh.condireccion o para un cliente de HH, incluso si solo dice "hazme un carrusel sobre X" sin más detalle. También aplícala si pide "el mismo estilo del carrusel de siempre", "un carrusel como los que ya hacemos" o "usa la skill del carrusel". No apliques la paleta/tipografía de esta skill a piezas de un cliente salvo que se indique explícitamente que es para HH.
+description: Genera carruseles de Instagram para HH Studio Creativo con una biblioteca de 13 formatos de slide (azul noche con foco, negro con grano, resplandor rojo, papel claro; Inter + serif cursiva; recuadros, tachados, comparaciones, frases fragmentadas) que elige y mezcla según el tema, rubro y nicho, con vista previa en miniatura antes de entregar y CTA obligatorio "Comenta PALABRA". Úsala SIEMPRE que Herberth pida un carrusel, post de varias láminas, o contenido tipo "swipe" para @hh.condireccion o para un cliente de HH, incluso si solo dice "hazme un carrusel sobre X" sin más detalle. También aplícala si pide "el mismo estilo del carrusel de siempre", "un carrusel como los que ya hacemos" o "usa la skill del carrusel". No apliques la paleta de HH a piezas de un cliente salvo que se indique explícitamente que es para HH.
 ---
 
-# Carrusel HH Studio Creativo — estilo v2
+# Carrusel HH Studio Creativo — v3 (biblioteca de formatos)
 
-Skill de identidad visual y estructura para carruseles de Instagram de HH Studio Creativo (@hh.condireccion). Al activarse, produce el **carrusel terminado en PNG** (1080x1350) más guion y caption, no una lista de títulos.
+Produce carruseles de Instagram terminados en PNG (1080x1350) para HH Studio Creativo (@hh.condireccion). La skill no es una plantilla: es una **biblioteca de formatos de slide** más un **criterio para elegirlos y mezclarlos** según el tema. Cada carrusel debe verse distinto al anterior sin dejar de ser reconocible como HH.
 
-**Estado:** estilo v2 aprobado por Herberth en septiembre 2026, a partir de un carrusel de referencia que le gustó ("Tu web puede desaparecer en un solo día"). El script completo de ese carrusel está en `ejemplos/carrusel_web_v2.py`: léelo antes de armar uno nuevo, es la mejor referencia de tamaños, interlineados y uso de cada recurso.
+Herberth va a seguir mandando referencias y feedback. Cuando lo haga, adapta lo nuevo a lo que ya existe (no lo reemplaces), propón el cambio concreto, y al aprobarlo agrégalo a la biblioteca y al "Registro de cambios".
 
-Herberth va a seguir ajustando este estilo. Cuando dé feedback sobre un carrusel, propón el cambio concreto a esta skill y regístralo en "Registro de cambios" (al final) una vez que lo apruebe.
+## Flujo obligatorio
 
-## Cuándo NO aplica esta identidad
+1. **Decidir** (sección "Cómo elegir"): lee el tema, rubro, nicho, audiencia y objetivo. Elige familia visual, formatos por slide, tipografía de acento y palabra del CTA. Si Herberth ya indicó algo (un formato, una fuente, un color), eso manda.
+2. **Guion**: texto exacto de cada lámina, con el formato elegido y por qué.
+3. **Vista previa**: genera todas las láminas y arma la hoja de miniaturas con `vista_previa([...], "vista_previa.png")`. Entrégale a Herberth **solo esa imagen**, junto con el guion resumido (una línea por slide), la decisión de diseño en 3–4 líneas y el entregable que promete el CTA. Luego **detente y espera**.
+4. **Ajustar**: si Herberth pide cambios, corrige y vuelve a mostrar la vista previa.
+5. **Entregar**: solo cuando Herberth diga "confirmo" (o equivalente: "dale", "ok, mándalos"), entrega todos los PNG en orden y el caption.
 
-Esta skill define la identidad de **HH como marca**. Si el carrusel es para un cliente de HH (Bar de Blas, Fonda Desna, un streamer, etc.), no uses esta paleta ni tipografía: construye desde la identidad de ese cliente. Sí puedes reutilizar la **estructura narrativa y los recursos** (recuadro destacado, tachado, checklist, CTA "Comenta") con los colores y fuentes del cliente. Confirma con Herberth si no queda claro para quién es la pieza.
+Nunca entregues los slides finales antes de la confirmación. La excepción es que Herberth pida explícitamente saltarse la vista previa.
 
-## Paleta (hex exactos, no aproximar)
+## Identidad fija (lo que nunca cambia)
 
-| Color | Hex | Uso |
+- **Rojo `#FE0000`** como único color de acento de HH.
+- **Inter** como tipografía base de lectura (`inter(peso, tamaño)`, pesos 400/500/700/800/900).
+- **Logo HH** en alguna posición de la lámina (portada, explicaciones y cierre como mínimo).
+- **CTA final "Comenta PALABRA"** (ver sección CTA).
+- **Voz HH**: tuteo, frases cortas, datos concretos, cero lenguaje de anuncio y nada inventado presentado como real.
+
+Todo lo demás (fondo, tipografía de acento, alineación, formato de cada slide) se elige por carrusel.
+
+## Paleta y fondos
+
+| Nombre | Valor | Función |
 |---|---|---|
-| Azul noche | `#061323` | Fondo principal (siempre con foco de luz, ver Fondos) |
-| Rojo | `#FE0000` | Acento: recuadro destacado, tachado, flecha, número activo, frase-remate, palabra del CTA |
-| Blanco | `#FFFFFF` | Titulares; fondo del slide claro de contraste |
-| Negro | `#000000` | Solo sombras. No como fondo en el estilo v2 |
+| Azul noche | `#061323` | Base de la familia "Foco" |
+| Rojo | `#FE0000` | Acento único |
+| Blanco | `#FFFFFF` | Texto principal sobre oscuro |
+| Negro con grano | `#050505` | Base de la familia "Negro" |
+| Crema | `#F2EFEA` | Texto grande sobre negro (más cálido que el blanco) |
+| Papel | `(236, 234, 230)` + textura | Base de la familia "Papel" |
+| Grises derivados | `GRIS_TEXTO #C9D0DA`, `GRIS_APAGADO #3B4E66`, `GRIS_META #AEB6C2` | Cuerpo, inactivos y contador |
 
-Tonos derivados permitidos (constantes en el script, no inventes otros):
-- `GRIS_TEXTO #C9D0DA`: texto secundario y cuerpo sobre fondo oscuro.
-- `GRIS_APAGADO #3B4E66`: elementos inactivos (los números no destacados de una secuencia).
-- `GRIS_META #AEB6C2`: contador `n/total`.
-- `LUZ_AZUL #2C5C8F`: color del foco de luz del fondo.
+Funciones de fondo (`scripts/generar_slide.py`):
+- `fondo_hh(posicion, radio, intensidad)`: azul noche con foco de luz azul. Rota la posición del foco en cada slide.
+- `fondo_negro()`: negro con grano fotográfico.
+- `fondo_resplandor(luz=(190,0,0))`: brillo rojo difuso detrás del centro, con grilla de puntos.
+- `fondo_papel()`: papel claro texturizado. Texto en `#111111`, logo negro.
+- `fondo_claro_puntos()`: blanco con grilla de puntos, para el checklist.
+- `gradar_foto_hh(ruta)`: si Herberth aporta una foto real, úsala como fondo, gradada al tono HH.
 
-El rojo se usa en **un solo elemento protagonista por slide**, más detalles menores (números de lista, checks). Si hay dos cosas rojas grandes en un slide, una sobra.
+Regla de mezcla: en un carrusel se pueden combinar hasta **3 fondos distintos**. Mínimo 2 slides seguidos con el mismo fondo, salvo que el contraste sea intencional (por ejemplo, un slide de papel entre dos negros para marcar un cambio de tema). El texto nunca va sobre el punto más brillante de un foco o resplandor.
 
-## Tipografía: Inter (obligatoria)
+## Tipografía
 
-Todo el carrusel va en **Inter** (`assets/fonts/Inter-400/500/700/800/900.ttf`), con `inter(peso, tamaño)`:
+- **Inter**: base de todo el texto de lectura, titulares sans y números.
+- **Serif cursiva de acento** para las palabras que quieres que se sientan:
+  - `serif(peso, tamaño)`: Playfair Display Italic 500/700/800. Contundente, para frases fragmentadas, números grandes y remates.
+  - `serif_fina(tamaño)`: Instrument Serif Italic. Más fina y editorial, para tonos elegantes, lifestyle o premium.
+- Regla de combinación: una línea puede mezclar Inter y serif con `linea_mixta()`, alineadas por línea base. La serif va en las **palabras emocionales o clave**, nunca en frases de más de ~6 palabras seguidas.
+- **Fuente temática opcional**: si el tema lo pide (bebidas, deporte, música, gastronomía, infantil…), puedes sumar **una** fuente display de Google Fonts con `fuente_tematica("Familia", peso, tamano=…)`, **solo en hook y sentencia**. Si no hay red o devuelve `None`, usa Inter 900 o serif como respaldo. Elige la fuente por lo que evoca, no por moda, y justifícala en la decisión de diseño.
+- Titulares en frase normal (mayúscula inicial), salvo etiquetas cortas tipo "NO DIGAS:".
+- Montserrat y League Gothic quedan en `assets/fonts/` solo por compatibilidad. No las uses salvo que Herberth las pida.
 
-| Rol | Peso | Tamaño guía (px en 1080x1350) |
-|---|---|---|
-| Titular / hook | 800 | 84–104, interlineado ≈ 1.17x |
-| Frase-remate en rojo | 900 | 104–116 |
-| Contra-frase gris del hook | 800 | 60–64 |
-| Subtítulo de ítem | 700–800 | 38–46 |
-| Cuerpo | 400 | 30–38, interlineado ≈ 1.4x |
-| Intro de slide ("Una web tiene…") | 500 | 44 |
-| Palabra del CTA | 900 | 128 |
-| Contador | 500 | 26 |
+## Biblioteca de formatos de slide
 
-- Titulares en **frase normal (mayúscula inicial)**, no en TODO MAYÚSCULAS. Terminan en punto cuando son una afirmación: el punto da peso.
-- Montserrat y League Gothic quedan en `assets/fonts/` solo por compatibilidad con piezas antiguas. No se usan en carruseles nuevos salvo que Herberth lo pida.
+### Familia A: Foco (azul noche con luz), estilo v2
+Ejemplos completos: `ejemplos/carrusel_web_v2.py` y `ejemplos/agenda_ia_v2.py`.
 
-## Fondos
+| ID | Formato | Composición | Sirve para |
+|---|---|---|---|
+| **A1** | Hook con recuadro | Titular Inter 800, frase clave en `caja_destacada` roja, línea corta y contra-frase gris | Abrir con una afirmación que incomoda |
+| **A2** | Tachado | ~~creencia común~~ con `trazo_mano`, verdad en rojo Inter 900 y una línea de cuerpo | Romper un mito o reencuadrar |
+| **A3** | Espejo "¿Te suena alguna?" | `fondo_claro_puntos` + 4–5 `tarjeta_check`, una marcada | Que el lector se reconozca en el problema |
+| **A4** | Secuencia "Tú empezaste acá" | Números grandes apagados, el activo con círculo rojo, `flecha_curva` y anotación | Mostrar que se saltó un orden |
+| **A5** | Lista numerada | Número rojo + título + cuerpo gris, separadores | Explicar 3–5 conceptos |
+| **A6** | Pasos con círculo | Círculos rojos numerados, el último relleno, con datos concretos | Un proceso o un orden correcto |
+| **A7** | Sentencia | 2 líneas blancas + remate rojo Inter 900 + consecuencia gris | Cerrar el argumento antes del CTA |
+| **A8** | CTA | "Comenta" + `etiqueta_cta` + `texto_mixto` | Cierre (ver sección CTA) |
 
-- **`fondo_hh(posicion, radio, intensidad)`**: el fondo estándar. Azul noche con un foco de luz azul difuso y grano sutil.
-- **Rota la posición del foco en cada slide** para que el carrusel tenga ritmo al deslizar: arriba-derecha `(0.92, 0.08)`, centro-alto `(0.8, 0.15)` con `radio=1.2`, izquierda-media `(0.1, 0.45)`, abajo-derecha `(0.95, 0.95)`, abajo-izquierda `(0.15, 0.95)`. Nunca el mismo foco en dos slides seguidos.
-- Los slides de frase (hook, tachado, sentencia) aguantan más luz (`radio` 1.0–1.2, `intensidad` 1.0). Los slides con lista o pasos van con menos luz (`intensidad` 0.7–0.8) para no competir con el texto.
-- **`fondo_claro_puntos()`**: slide claro de contraste, blanco con grilla de puntos. **Máximo uno por carrusel**, ideal para el checklist "¿Te suena alguna?". Lleva el logo azul (`variante="azul"`) y el texto en azul noche.
-- El texto nunca va sobre el punto más brillante del foco: el foco es atmósfera, el texto va en la zona oscura.
-- Si Herberth aporta una foto real (BTS, set, equipo), pásala por `gradar_foto_hh()` y úsala como fondo de portada en vez del foco procedural. No inventes ni simules fotografías.
+### Familia B: Editorial (referencias aprobadas en sept. 2026)
+Ejemplo completo: `ejemplos/formatos_mixtos_ideas.py`.
 
-## Recursos gráficos del estilo v2
+| ID | Formato | Composición | Sirve para |
+|---|---|---|---|
+| **B1** | Resplandor | `fondo_resplandor`, texto centrado: línea Inter 800 + 1–2 líneas serif cursiva grandes + línea Inter, `boton_flecha` abajo, logo centrado arriba | Portada que se siente "tendencia", "lo nuevo", "esta semana" |
+| **B2** | Suma | `fondo_negro`, 2–4 líneas Inter 700 color crema, una línea roja vertical corta y el total en serif 800 rojo gigante, con una línea gris opcional debajo | Abrir o revelar una cifra: "X + Y + Z = total" |
+| **B3** | Lista en papel | `fondo_papel`, "Palabra Inter 900 + *Palabra serif roja*", regla negra, 10–15 ítems numerados Inter 500 31px, pie "1–15 \| TEMA" y logo negro | Entregar valor denso: ideas, plantillas, recursos |
+| **B4** | Comparación "No digas / Mejor di" | `fondo_negro`, etiqueta roja Inter 800, frase entre comillas Inter 800 blanca, nota en serif cursiva gris; línea roja horizontal al medio y el mismo esquema abajo | Contrastar lo que no funciona con lo que sí (copy, precios, atención, mensajes) |
+| **B5** | Frase fragmentada | `fondo_negro`, frase de 5–7 líneas centrada que alterna Inter 800 crema con serif 800 roja, una palabra subrayada | Una idea fuerte, citable y compartible |
 
-Todos están en `scripts/generar_slide.py`:
+Estos formatos son un punto de partida, no moldes cerrados: puedes crear variantes con la misma lógica (por ejemplo, B4 con "Antes / Ahora", o B2 con precios en vez de cantidades). Si una variante funciona y Herberth la aprueba, agrégala a la biblioteca con un ID nuevo.
 
-| Recurso | Función | Cuándo |
-|---|---|---|
-| Recuadro destacado | `caja_destacada(img, x, y, texto, font)` | La frase clave del hook o del titular ("en un solo día.", "correcto."). Uno por slide como máximo |
-| Tachado a mano | `trazo_mano(d, x0, x1, y)` | Reencuadre: tachar la creencia equivocada y responder abajo en rojo |
-| Línea divisoria corta | `d.line((M, y, M+170, y), fill=BLANCO, width=5)` | Separar el hook de la contra-frase |
-| Secuencia con número activo | Números Inter 800 150px en `GRIS_APAGADO`, el activo en blanco con círculo rojo | "Hay N pasos y tú empezaste en el X" |
-| Flecha curva + anotación | `flecha_curva(d, p0, p1, p2)` + `texto_con_sombra` en rojo | Señalar el elemento activo ("Tú empezaste acá.") |
-| Tarjeta de checklist | `tarjeta_check(img, x0, y, x1, texto, font, marcada)` | En el slide claro. Una sola tarjeta marcada (azul noche + check rojo): la más dolorosa |
-| Lista numerada | Número rojo Inter 800 + título Inter 800 + cuerpo gris, separadores `#1E3350` | Explicar piezas o conceptos |
-| Pasos con círculo | Círculo rojo con número; el último relleno | Un orden o proceso |
-| Etiqueta CTA | `etiqueta_cta(img, x, y, "PALABRA")` | Solo en el cierre |
-| Texto mixto | `texto_mixto(d, x, y, [(texto, color), ...], font, ancho)` | Destacar en rojo el tiempo o beneficio dentro del CTA |
-| Contador | `contador(img, n, total)` | En todos los slides |
-| Logo | `logo_esquina(img)`: arriba a la izquierda, 78px | Portada, slides de explicación y cierre. En los slides de frase pura se puede omitir para dejar respirar |
+## Cómo elegir (criterio propio)
 
-## Estructura narrativa
+Antes de decidir, responde internamente estas preguntas:
 
-Todo carrusel tiene **entre 6 y 10 slides**: un hook, desarrollo y cierre con CTA. Los tipos de slide del estilo v2 son estos:
+1. **¿Qué tipo de contenido es?**
+   - Educativo o paso a paso → A5, A6, A4 (Foco) o B3.
+   - Opinión, mito o polémica → A2, B5, B4.
+   - Valor descargable (ideas, recursos, plantillas) → B2 + B3.
+   - Diagnóstico del lector ("¿te pasa esto?") → A3, A4.
+   - Tendencia o novedad → B1.
+   - Venta de un servicio de HH → A1, A3, A6 y cierre A7 + A8.
+2. **¿Qué tono pide el rubro o nicho?**
+   - Tecnología, servicios, B2B, legal o finanzas → Familia Foco, Inter dominante y serif mínima.
+   - Gastronomía, bares, alcohol, eventos o nocturno → Familia Negro + resplandor rojo, serif 800 protagonista y, si suma, una fuente temática display (condensada, de cartel o de etiqueta).
+   - Moda, belleza, lifestyle o premium → Papel y Negro, `serif_fina`, más espacio negativo.
+   - Creadores, streaming o marketing en redes → mezcla B1 + B5 + B3, serif 800 y frases fragmentadas.
+   - Salud o bienestar → Foco y Papel, tono sereno, sin rojo agresivo en grandes superficies.
+3. **¿Cuánto texto tiene cada slide?** Mucho texto → fondo plano (Negro o Papel, o Foco con intensidad 0.7). Una frase → fondo con vida (Resplandor o Foco intenso).
+4. **¿Qué se usó en los carruseles anteriores?** Revisa la conversación y la carpeta de trabajo. Evita repetir la misma familia dominante, el mismo formato de portada y la misma secuencia de formatos del último carrusel.
 
-1. **Hook**: afirmación que incomoda o sorprende, con la frase clave en recuadro rojo. Debajo, una línea corta y una contra-frase gris que explica el giro ("Y no por un hackeo. Por un correo de renovación que nadie leyó.").
-2. **Reencuadre con tachado**: ~~la creencia común~~ tachada en rojo, y abajo la verdad en rojo Inter 900 ("Es un tema de dueño."). Una línea de cuerpo que la explica.
-3. **Espejo "¿Te suena alguna?"**: slide claro con 4–5 tarjetas de síntomas reales del lector; una marcada.
-4. **Secuencia "Tú empezaste acá"**: intro corta ("Una web tiene cuatro piezas, y van en un orden."), números con el activo en círculo rojo, flecha y anotación. Cierra con dos líneas en blanco del tipo "Por eso X. Y por eso Y."
-5. **Explicación**: lista numerada de 3–5 ítems.
-6. **Proceso / orden correcto**: pasos con círculo, con datos concretos (precios, plazos, nombres de herramientas).
-7. **Sentencia**: frase de 2 líneas en blanco + remate en rojo 900, y una línea de consecuencia.
-8. **CTA** (obligatorio, siempre el último): ver abajo.
+Reglas de mezcla:
+- **Carrusel puro**: una sola familia. Conviene cuando el tema es muy homogéneo o el nicho pide una estética clara.
+- **Carrusel mixto** (el más común): 2 familias, por ejemplo portada B1 → desarrollo Foco → frase B5 → CTA.
+- **Carrusel editorial**: un formato distinto por slide (como la prueba de ideas). Úsalo para contenido de alto valor o cuando el carrusel anterior fue muy homogéneo.
+- Nunca repitas el mismo ID de formato más de 2 veces en un carrusel, salvo listas que continúan (B3 de 1–15 y luego 16–30).
+- La portada define el tono. Elígela primero y construye el resto para que haga sentido con ella.
 
-No todos los carruseles usan los 8 tipos ni en ese orden. Elige los que el tema necesita, repite un tipo si hace falta (por ejemplo, dos de explicación) y evita slides de relleno o que prometan algo que el desarrollo no entrega.
+En la vista previa, indica siempre qué ID usa cada slide (por ejemplo: "1 B1 · 2 B2 · 3 A3 · …"), así Herberth puede pedir cambios por ID.
 
 ## CTA obligatorio: "Comenta PALABRA"
 
-Todo carrusel cierra con este formato:
+- Siempre es el último slide.
+- "Comenta" + la PALABRA en `etiqueta_cta` (recuadro rojo inclinado) + la promesa en `texto_mixto`: **"y te mando [entregable concreto] [para qué] [en X tiempo / listo para X]"**, con el tiempo o beneficio en rojo.
+- Puede ir sobre cualquier familia de fondo (Foco, Negro o Resplandor) y alineado a la izquierda o centrado, según el resto del carrusel.
+- Una sola palabra, en mayúsculas, ligada al tema.
+- Revisa los saltos de línea a mano: sin palabras solas en la última línea y sin espacio antes de ":".
+- En la respuesta final, avísale a Herberth qué entregable prometió el CTA, para que lo tenga listo antes de publicar, y ofrécete a crearlo.
 
-- "Comenta" (Inter 700, 60px, blanco).
-- La **PALABRA** en `etiqueta_cta` (recuadro rojo, Inter 900, levemente inclinado, con sombra). Una sola palabra, en mayúsculas, ligada al tema (DOMINIO, WEB, REELS, PRECIO…).
-- La promesa en `texto_mixto` (Inter 700, 42px): **"y te mando [entregable concreto] para [resultado] [en X minutos / en X pasos]"**, con el tiempo o beneficio en rojo.
-- El entregable debe existir o ser fácil de preparar (checklist, guion, plantilla, PDF). En la respuesta final, avísale a Herberth qué entregable prometió el CTA, para que lo tenga listo antes de publicar, y ofrécete a crearlo.
-- Sin lenguaje de anuncio: nada de "no te lo pierdas", "¡aprovecha!" ni "link en la bio" como CTA principal.
+## Recursos disponibles (`scripts/generar_slide.py`)
 
-## Variación: cómo mantenerlo vivo sin romper el estilo
+- **Texto**: `inter`, `serif`, `serif_fina`, `fuente_tematica`, `lineas` (con `centrado=True`), `linea_mixta` (fuentes y colores mezclados, subrayado), `wrap`, `texto_mixto`, `texto_con_sombra`.
+- **Gráficos**: `caja_destacada`, `trazo_mano`, `flecha_curva`, `tarjeta_check`, `etiqueta_cta`, `boton_flecha`.
+- **Fondos**: `fondo_hh`, `fondo_negro`, `fondo_resplandor`, `fondo_papel`, `fondo_claro_puntos`, `gradar_foto_hh`.
+- **Marca**: `logo_esquina`, `logo_centrado`, `pegar_logo` (variantes blanco, azul y negro).
+- **Meta**: `contador(img, n, total)` y `vista_previa(rutas, salida)`.
 
-Lo fijo es la tipografía, la paleta, los recursos, el fondo con foco, el contador y el CTA. Rota en cada carrusel nuevo al menos 2 de estas variables:
+Medidas: 1080x1350, margen lateral `M = 90`. Tamaños de referencia en los tres ejemplos.
 
-- **Alineación**: bloque a la izquierda (estándar), centrado (bueno para slides de frase y el CTA) o alineado abajo, dejando la luz arriba.
-- **Orden de los tipos de slide** (por ejemplo: hook → espejo → reencuadre → explicación → sentencia → CTA).
-- **Posición del foco de luz** por slide.
-- **Dónde cae el recuadro destacado**: primera línea, última línea o una palabra suelta.
-- **Qué slide es el claro**: el checklist u otro, como una comparación antes/después.
-- **La palabra del CTA** y el entregable.
+## Logo
 
-Nunca repitas el mismo hook, la misma secuencia de slides y la misma alineación de un carrusel anterior de HH.
+`assets/logo_hh_blanco.png` para fondos oscuros, y `logo_hh_negro.png` o `logo_hh_azul.png` para papel o blanco. Los archivos tienen transparencia real. Si Herberth sube un logo nuevo, verifica el canal alfa antes de usarlo. Si el logo está en la lámina, no repitas "HH" ni el @ como texto.
 
-## Voz y copy
+## Cuándo NO aplica la identidad HH
 
-- Tuteo, frases cortas, en el idioma del dueño de negocio, sin tecnicismos. Si un término técnico es inevitable, explícalo con una analogía cotidiana (por ejemplo, dominio = dirección del local).
-- Datos concretos antes que adjetivos: precios reales en CLP, plazos, nombres de herramientas. Verifica los datos que no sean de conocimiento general.
-- Nada de historias o cifras inventadas presentadas como reales. Si el hook usa un caso, es hipotético ("Tu web puede…") o real y verificado.
-- Cero lenguaje de anuncio.
+Si el carrusel es para un cliente (Bar de Blas, Fonda Desna, un streamer, etc.), usa su paleta, sus fuentes y su logo, pero puedes usar la **biblioteca de formatos y el criterio de elección** de esta skill. Si no está claro para quién es la pieza, pregunta.
 
-## Marca de agua / logo
+## Referencias nuevas de Herberth
 
-En `assets/` hay tres variantes del isotipo HH (las dos H enfrentadas con punto rojo central), con fondo transparente real:
-- `logo_hh_blanco.png`: para el fondo azul noche (estándar).
-- `logo_hh_azul.png`: para el slide claro.
-- `logo_hh_negro.png`: alternativa sobre fondos claros.
+Cuando lleguen screenshots de referencia:
+1. Analiza cada una: fondo, tipografías, jerarquía, recursos gráficos y manejo del espacio.
+2. Tradúcela a un formato con la identidad fija de HH (rojo, Inter, logo, voz), sin copiar colores, fuentes ni textos ajenos.
+3. Haz una prueba que la combine con los formatos existentes.
+4. Si Herberth la aprueba, agrégala a la biblioteca con un ID nuevo (C1, C2… o la familia que corresponda), súmale su función en `generar_slide.py` si hace falta y actualiza el registro de cambios.
 
-Nota técnica: los archivos originales no tenían canal alfa (PNG de fondo blanco opaco). Estas versiones ya están corregidas. Si Herberth sube un logo nuevo, verifica el canal alfa antes de usarlo.
+## Control de calidad (antes de la vista previa)
 
-Si el logo está presente, no repitas "HH" ni el @ como texto suelto en la misma gráfica.
+Revisa la hoja de miniaturas y cualquier slide dudoso a tamaño completo:
+- Texto cortado, superpuesto o fuera del margen, y choques con el pie o el logo.
+- Palabras solas en la última línea de un párrafo.
+- Espacio mal repartido (bloque apretado arriba y la mitad inferior vacía sin intención).
+- Un solo protagonista rojo por slide.
+- Contraste legible en cada fondo, contador presente (salvo B3, que lleva su propio pie) y logo sin tapar texto.
 
-## Referencias visuales que Herberth adjunte
+## Entregables
 
-Si llegan imágenes de referencia, analízalas antes de generar nada: dónde ubican el texto, cuánto espacio negativo dejan, qué recursos usan (recuadros, tachados, flechas, tarjetas) y cómo es el fondo. Replica la composición y los recursos dentro de la paleta y la tipografía de HH. No copies colores, fuentes ni textos ajenos.
-
-## Qué entregar
-
-### Paso 1: Guion
-Antes de generar imágenes, define:
-- Tipo de slide y función de cada lámina, en qué orden y por qué.
-- Texto exacto de cada lámina.
-- Qué variables rotaste respecto al estilo base (alineación, orden, focos, etc.).
-- La palabra del CTA y el entregable prometido.
-- Caption del post (máx. ~120 palabras, sin lenguaje de anuncio, repite el CTA al final) y 5–6 hashtags.
-
-### Paso 2: PNG
-- Arma un script propio importando `scripts/generar_slide.py`. Si Pillow no está instalado, instálalo (`pip install pillow numpy`).
-- 1080x1350 (4:5). Margen lateral `M = 90`.
-- Exporta `slide_01.png` … `slide_NN_cta.png` y entrégalos juntos, en orden.
-
-### Control de calidad antes de entregar
-Arma una hoja de contactos (todas las láminas reducidas en una imagen) y revísala, y luego revisa por separado cualquier slide dudoso:
-- Texto cortado, superpuesto o saliéndose del margen.
-- Palabras sueltas en la última línea de un párrafo (corrígelas con saltos manuales).
-- Espacio mal repartido: bloque apretado arriba y la mitad inferior vacía sin intención.
-- Contraste legible, logo sin tapar texto, contador presente, un solo protagonista rojo por slide.
-- Puntuación del CTA (sin espacio antes de ":").
-
-Corrige y regenera. No entregues un slide que no revisaste visualmente.
-
-No prometas publicar en Instagram: el entregable son los PNG para que Herberth los suba, salvo que exista una herramienta de publicación conectada y autorizada.
-
-## Antes de escribir el contenido
-
-Pregunta solo si no está claro por el contexto:
-1. Tema y objetivo (qué debe entender, sentir o hacer la audiencia).
-2. Si es para HH o para un cliente.
-
-No preguntes por paleta, tipografía ni estructura: eso ya está definido arriba.
+- **Vista previa**: `vista_previa.png` + guion resumido con IDs + decisión de diseño + entregable del CTA.
+- **Tras "confirmo"**: `slide_01.png` … `slide_NN_cta.png` en orden, y el caption (máx. ~120 palabras, repite el CTA, 5–6 hashtags).
+- No prometas publicar en Instagram: Herberth sube los archivos.
 
 ## Registro de cambios
 
-- **v2 (sept. 2026)**: Inter reemplaza a League Gothic/Montserrat. Fondo azul noche con foco de luz rotativo. Nuevos recursos: recuadro destacado, tachado a mano, secuencia "Tú empezaste acá" con flecha, slide claro con checklist, contador n/total. CTA obligatorio "Comenta PALABRA + entregable + tiempo". Reglas de variación para que cada carrusel sea distinto. Ejemplo de referencia en `ejemplos/carrusel_web_v2.py`.
+- **v3 (sept. 2026)**: la skill pasa a ser una biblioteca de formatos (familia A Foco y familia B Editorial) con criterio propio para elegir y mezclar según el tema, rubro y nicho. Se suman Playfair Display Italic e Instrument Serif Italic como tipografías de acento, la descarga opcional de una fuente temática, los fondos negro con grano, resplandor rojo y papel, las funciones `linea_mixta`, `boton_flecha`, `logo_centrado` y `vista_previa`, y el flujo obligatorio de vista previa → "confirmo" → entrega. Ejemplos en `ejemplos/`.
+- **v2 (sept. 2026)**: Inter reemplaza a League Gothic y Montserrat. Fondo azul noche con foco rotativo, recuadro destacado, tachado a mano, secuencia con flecha, checklist claro, contador y CTA "Comenta PALABRA".
 - **v1**: League Gothic + Montserrat, estructura portada/cuerpo (A/B/C/D)/cierre.

@@ -419,5 +419,116 @@ def texto_mixto(d, x, y, partes, font, ancho_max, alto_linea=60):
             xx += d.textlength(palabra + " ", font=font)
     return y + alto_linea
 
+# =====================================================================
+#  ESTILO V3: formatos B (referencias aprobadas sept. 2026)
+# =====================================================================
+
+NEGRO_GRANO = "#050505"
+CREMA = "#F2EFEA"         # blanco cálido para texto grande sobre negro
+PAPEL = (236, 234, 230)    # base del fondo papel (derivado del blanco)
+
+def serif(peso, tamano):
+    """Playfair Display Italic (500, 700, 800). Para palabras destacadas en cursiva."""
+    return ImageFont.truetype(os.path.join(FONTS, f"PlayfairDisplay-Italic-{peso}.ttf"), tamano)
+
+def serif_fina(tamano):
+    """Instrument Serif Italic: cursiva más fina y editorial (alternativa a Playfair)."""
+    return ImageFont.truetype(os.path.join(FONTS, "InstrumentSerif-Italic.ttf"), tamano)
+
+def fuente_tematica(familia, peso=700, italic=False, tamano=100, carpeta="/tmp/fuentes_hh"):
+    """Descarga una fuente de Google Fonts (TTF) para un carrusel temático.
+    Devuelve ImageFont o None si no hay red (usar entonces Inter/serif como respaldo).
+    Ej: fuente_tematica("Bebas Neue", 400, tamano=180)."""
+    import subprocess, re
+    os.makedirs(carpeta, exist_ok=True)
+    nombre = f"{familia.replace(' ', '')}-{peso}{'i' if italic else ''}.ttf"
+    ruta = os.path.join(carpeta, nombre)
+    if not os.path.exists(ruta):
+        eje = f"ital,wght@1,{peso}" if italic else f"wght@{peso}"
+        url = f"https://fonts.googleapis.com/css2?family={familia.replace(' ', '+')}:{eje}"
+        try:
+            css = subprocess.run(["curl", "-sS", "-m", "20", "-A", "Mozilla/4.0", url], capture_output=True, text=True).stdout
+            ttf = re.search(r"https://[^)]+\.ttf", css)
+            if not ttf:
+                return None
+            subprocess.run(["curl", "-sS", "-m", "30", "-o", ruta, ttf.group(0)], check=True)
+        except Exception:
+            return None
+    try:
+        return ImageFont.truetype(ruta, tamano)
+    except Exception:
+        return None
+
+def _grano(img, fuerza=0.05, sigma=40):
+    g = Image.effect_noise((ANCHO, ALTO), sigma).convert("L")
+    return Image.blend(img, Image.merge("RGB", (g, g, g)), fuerza)
+
+def fondo_negro():
+    """B2/B4/B5: negro con grano fotográfico."""
+    return _grano(Image.new("RGB", (ANCHO, ALTO), NEGRO_GRANO), 0.06, 50)
+
+def fondo_resplandor(base="#050A12", luz=(190, 0, 0), centro=(0.5, 0.45), radio=0.62, puntos=True):
+    """B1: resplandor difuso (rojo por defecto) detrás del texto central + grilla de puntos."""
+    b = np.array(_hex_a_rgb(base), float)
+    yy, xx = np.mgrid[0:ALTO, 0:ANCHO]
+    d = np.sqrt(((xx / ANCHO) - centro[0]) ** 2 + (((yy / ALTO) - centro[1]) * ALTO / ANCHO) ** 2)
+    f = np.clip(1 - d / radio, 0, 1) ** 1.8
+    arr = b + (np.array(luz, float) - b) * f[:, :, None]
+    img = Image.fromarray(np.clip(arr, 0, 255).astype("uint8"))
+    if puntos:
+        dr = ImageDraw.Draw(img)
+        for y in range(24, ALTO, 38):
+            for x in range(24, ANCHO, 38):
+                dr.ellipse((x - 1.4, y - 1.4, x + 1.4, y + 1.4), fill=(70, 78, 92))
+    return _grano(img, 0.04)
+
+def fondo_papel():
+    """B3: papel claro con textura y leves manchas."""
+    img = _grano(Image.new("RGB", (ANCHO, ALTO), PAPEL), 0.10, 60)
+    manchas = Image.effect_noise((ANCHO // 8, ALTO // 8), 90).convert("L").resize((ANCHO, ALTO), Image.BICUBIC).filter(ImageFilter.GaussianBlur(30))
+    return Image.composite(img, Image.new("RGB", (ANCHO, ALTO), (222, 219, 214)), manchas.point(lambda v: 150 + v // 3))
+
+def linea_mixta(d, y_base, partes, centrado=True, x=M):
+    """Una línea que mezcla fuentes/colores alineados por línea base.
+    partes = [(texto, font, color), (texto, font, color, True)]  -> True = subrayado."""
+    ancho = sum(d.textlength(p[0], font=p[1]) for p in partes)
+    xx = (ANCHO - ancho) / 2 if centrado else x
+    for p in partes:
+        t, f, c = p[:3]
+        d.text((xx, y_base), t, font=f, fill=c, anchor="ls")
+        w = d.textlength(t, font=f)
+        if len(p) > 3 and p[3]:
+            d.line((xx + 4, y_base + 14, xx + w - 4, y_base + 14), fill=c, width=6)
+        xx += w
+    return xx
+
+def boton_flecha(d, cy=1020, color=BLANCO):
+    """B1: botón ovalado con flecha →, centrado, invita a deslizar."""
+    d.rounded_rectangle((ANCHO / 2 - 58, cy - 30, ANCHO / 2 + 58, cy + 30), radius=30, outline=color, width=3)
+    d.line((ANCHO / 2 - 28, cy, ANCHO / 2 + 26, cy), fill=color, width=3)
+    d.line([(ANCHO / 2 + 10, cy - 14), (ANCHO / 2 + 26, cy), (ANCHO / 2 + 10, cy + 14)], fill=color, width=3)
+
+def logo_centrado(img, y, variante="blanco", tamano=90):
+    lg = Image.open(os.path.join(LOGOS, f"logo_hh_{variante}.png")).convert("RGBA")
+    lg = lg.resize((tamano, int(lg.height * tamano / lg.width)))
+    img.paste(lg, ((ANCHO - tamano) // 2, int(y)), lg)
+
+def vista_previa(rutas_png, salida, columnas=4, ancho_mini=360):
+    """Hoja de contactos con todas las láminas en miniatura y su número.
+    OBLIGATORIA antes de entregar: se muestra a Herberth y se espera 'confirmo'."""
+    minis = [Image.open(r).convert("RGB").resize((ancho_mini, int(ancho_mini * ALTO / ANCHO))) for r in rutas_png]
+    h = minis[0].height
+    filas = (len(minis) + columnas - 1) // columnas
+    gap = 16
+    hoja = Image.new("RGB", (columnas * ancho_mini + (columnas + 1) * gap, filas * (h + 44) + gap), (24, 24, 28))
+    d = ImageDraw.Draw(hoja)
+    for i, m in enumerate(minis):
+        x = gap + (i % columnas) * (ancho_mini + gap)
+        y = gap + (i // columnas) * (h + 44)
+        hoja.paste(m, (x, y))
+        d.text((x, y + h + 8), f"{i + 1}", font=inter(700, 24), fill=BLANCO)
+    hoja.save(salida)
+    return salida
+
 if __name__ == "__main__":
     print("Módulo de utilidades — importar, no ejecutar directo.")
