@@ -549,7 +549,8 @@ def fondo_radial(c_centro, c_borde, centro=(0.4, 0.4), curva=1.4, grano=0.045, a
 
 # Superficies (fondos completos). Mueve 'centro' en cada slide para dar ritmo.
 def fondo_noche(centro=(0.35, 0.4)):
-    """Reemplaza al negro plano: casi negro al centro, azul noche en los bordes."""
+    """Oscuro por defecto: casi negro al centro, azul noche en los bordes.
+    (El negro plano, fondo_negro(), se reserva para slides de impacto o legibilidad.)"""
     return fondo_radial((7, 8, 12), (12, 34, 64), centro=centro, curva=1.3, grano=0.05)
 
 def fondo_vino(centro=(0.3, 0.35)):
@@ -577,7 +578,7 @@ _OSCURO = dict(txt=BLANCO, txt2=GRIS_TEXTO, crema=CREMA, acento=ROJO, logo="blan
 _CLARO = dict(txt=AZUL_NOCHE, txt2="#4A5A70", crema=AZUL_NOCHE, acento=ROJO, logo="azul", meta="#5B6B80")
 
 PALETAS = {
-    # tapa = portada y CTA (mismo fondo: abre y cierra igual)
+    # tapa = superficie de portada (el CTA puede usarla o elegir otra: dev, negro plano, etc.)
     # dev  = slides de desarrollo
     # caja = (fondo, texto) del recuadro destacado y la etiqueta del CTA
     # acento_tapa = color de la palabra destacada dentro del CTA

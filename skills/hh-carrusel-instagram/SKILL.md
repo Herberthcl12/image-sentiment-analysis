@@ -42,11 +42,11 @@ Todo lo demás (fondo, tipografía de acento, alineación, formato de cada slide
 | Grises derivados | `GRIS_TEXTO #C9D0DA`, `GRIS_APAGADO #3B4E66`, `GRIS_META #AEB6C2` | Cuerpo, inactivos y contador |
 
 Funciones de fondo (`scripts/generar_slide.py`):
-- `fondo_noche(centro)`: **reemplaza al negro plano**. Casi negro al centro que se funde en azul noche hacia los bordes. Mueve el `centro` en cada slide.
+- `fondo_noche(centro)`: el **oscuro por defecto**. Casi negro al centro que se funde en azul noche hacia los bordes. Mueve el `centro` en cada slide.
 - `fondo_vino(centro)`, `fondo_crema(centro)`, `fondo_rosa_celeste(centro)`, `fondo_celeste(centro)`, `fondo_rojo_profundo(centro)`: superficies de las paletas (ver "Sistema de paletas").
 - `fondo_radial(c_centro, c_borde, …)`: base para crear superficies nuevas con degradado y sombra.
 - `fondo_hh(posicion, radio, intensidad)`: azul noche con foco de luz azul. Rota la posición del foco en cada slide.
-- `fondo_negro()`: negro plano con grano. **Solo** si el slide tiene tanta información que cualquier degradado estorba; en todos los demás casos, `fondo_noche()`.
+- `fondo_negro()`: negro plano con grano. Es una **elección deliberada, no prohibida**: úsalo cuando un slide necesite máxima legibilidad o máximo impacto (una frase que tiene que golpear, un dato que tiene que entenderse sí o sí, o mucha información). Lo que no se hace es poner negro plano en todos los slides: el resto va en `fondo_noche()` u otra superficie de la paleta.
 - `fondo_resplandor(luz=(190,0,0))`: brillo rojo difuso detrás del centro, con grilla de puntos.
 - `fondo_papel()`: papel claro texturizado. Texto en `#111111`, logo negro.
 - `fondo_claro_puntos()`: blanco con grilla de puntos, para el checklist.
@@ -57,7 +57,7 @@ El texto nunca va sobre el punto más brillante de un foco o resplandor. Las reg
 ## Sistema de paletas
 
 Cada paleta define **roles de superficie**, no slides fijos:
-- **Tapa**: portada y CTA, con el mismo fondo para que el carrusel abra y cierre igual.
+- **Tapa**: la superficie pensada para la portada. El **CTA no tiene que repetirla**: puede usar la tapa, la superficie de desarrollo, el negro plano u otra superficie de la paleta. Decide según cómo termine el carrusel y qué haga que el CTA destaque.
 - **Desarrollo**: todos los slides intermedios.
 - **Contraste** (opcional, 1 slide): `fondo_papel()`, común a todas las paletas, para listas densas.
 
@@ -73,7 +73,7 @@ Además define los colores de texto de cada superficie, el recuadro destacado y 
 Cómo usarlas:
 - Dibuja cada formato leyendo los colores de la paleta (`P["tapa_txt"]`, `P["dev_estilo"]["txt"]`, `P["caja"]`, etc.) en vez de fijar colores a mano. Así el mismo guion sale en cualquier paleta con solo cambiar la clave. Ver `ejemplos/vinos_3_paletas.py`.
 - Para la vista previa, elige 3 paletas que tengan sentido para el tema: la que recomiendas y dos alternativas con otro carácter. Pueden compartir superficies (por ejemplo, dos con desarrollo noche).
-- Puedes crear paletas nuevas con `fondo_radial()` combinando colores de HH (azul noche, rojo profundo, blanco, crema, rosado, celeste). Evita el resplandor rojo sobre azul noche en portada y CTA: no le gusta a Herberth. Si una combinación nueva funciona y Herberth la aprueba, agrégala a `PALETAS` con nombre.
+- Puedes crear paletas nuevas con `fondo_radial()` combinando colores de HH (azul noche, rojo profundo, blanco, crema, rosado, celeste). Con el resplandor rojo sobre azul noche, cuida la tonalidad: el rojo saturado brillando sobre azul se vio duro en portada y CTA. Un resplandor más profundo (vino o burdeo) o sobre otra base puede funcionar; evalúalo caso a caso y, si dudas, muéstralo como una de las 3 versiones. Si una combinación nueva funciona y Herberth la aprueba, agrégala a `PALETAS` con nombre.
 - Cuando Herberth mande estructuras nuevas, adáptalas a estas paletas: las paletas se mantienen y la estructura cambia.
 
 ## Tipografía
@@ -90,7 +90,7 @@ Cómo usarlas:
 ## Orden y coherencia (obligatorio)
 
 Herberth prefiere carruseles **ordenados**: que se note un sistema y que no maree. Por eso:
-- **Superficies con rol fijo**: tapa (portada + CTA), desarrollo (el resto) y como máximo **un** slide de contraste (papel). Nada de un fondo distinto en cada slide.
+- **Superficies con rol claro**: una superficie para la portada, una para el desarrollo, como máximo **un** slide de contraste (papel) y, si hace falta impacto, algún slide en negro plano. El CTA elige la superficie que mejor lo haga destacar (no tiene que ser igual a la portada). Nada de un fondo distinto en cada slide sin motivo.
 - **Una sola alineación** en todo el carrusel (todo a la izquierda o todo centrado). El logo y el contador siempre en la misma posición.
 - **Máximo 4–5 IDs de formato distintos** por carrusel. La variedad viene del contenido y de la paleta, no de cambiar el diseño en cada lámina.
 - Entre carruseles sí se rota: cambia la paleta, el formato de portada o la secuencia respecto al anterior, pero dentro de cada carrusel hay consistencia.
@@ -116,7 +116,7 @@ Ejemplo completo: `ejemplos/formatos_mixtos_ideas.py`. Donde el ejemplo usa `fon
 
 | ID | Formato | Composición | Sirve para |
 |---|---|---|---|
-| **B1** | Resplandor | *(No usar en portada ni CTA sobre azul noche.)* `fondo_resplandor`, texto centrado: línea Inter 800 + 1–2 líneas serif cursiva grandes + línea Inter, `boton_flecha` abajo, logo centrado arriba | Portada que se siente "tendencia", "lo nuevo", "esta semana" |
+| **B1** | Resplandor | *(En portada o CTA, cuida la tonalidad: mejor un resplandor profundo, tipo vino o burdeo, que rojo saturado sobre azul.)* `fondo_resplandor`, texto centrado: línea Inter 800 + 1–2 líneas serif cursiva grandes + línea Inter, `boton_flecha` abajo, logo centrado arriba | Portada que se siente "tendencia", "lo nuevo", "esta semana" |
 | **B2** | Suma | `fondo_negro`, 2–4 líneas Inter 700 color crema, una línea roja vertical corta y el total en serif 800 rojo gigante, con una línea gris opcional debajo | Abrir o revelar una cifra: "X + Y + Z = total" |
 | **B3** | Lista en papel | `fondo_papel`, "Palabra Inter 900 + *Palabra serif roja*", regla negra, 10–15 ítems numerados Inter 500 31px, pie "1–15 \| TEMA" y logo negro | Entregar valor denso: ideas, plantillas, recursos |
 | **B4** | Comparación "No digas / Mejor di" | `fondo_negro`, etiqueta roja Inter 800, frase entre comillas Inter 800 blanca, nota en serif cursiva gris; línea roja horizontal al medio y el mismo esquema abajo | Contrastar lo que no funciona con lo que sí (copy, precios, atención, mensajes) |
@@ -206,7 +206,7 @@ Revisa la hoja de miniaturas y cualquier slide dudoso a tamaño completo:
 
 ## Registro de cambios
 
-- **v3.1 (sept. 2026)**: sistema de paletas separado de los formatos (`PALETAS`: vino_noche, crema_azul, rosa_celeste, foco_clasico) con superficies de degradado y sombra (`fondo_noche`, `fondo_vino`, `fondo_crema`, `fondo_rosa_celeste`, `fondo_celeste`, `fondo_rojo_profundo`, `fondo_radial`). El negro plano se reemplaza por `fondo_noche`. Nada de rojo puro en superficies grandes ni de resplandor rojo sobre azul en portada y CTA. Reglas de orden: roles de superficie, una alineación, máximo 4–5 formatos. La vista previa muestra 3 versiones de paleta (`comparar_versiones`). Ejemplo en `ejemplos/vinos_3_paletas.py`.
+- **v3.1 (sept. 2026)**: sistema de paletas separado de los formatos (`PALETAS`: vino_noche, crema_azul, rosa_celeste, foco_clasico) con superficies de degradado y sombra (`fondo_noche`, `fondo_vino`, `fondo_crema`, `fondo_rosa_celeste`, `fondo_celeste`, `fondo_rojo_profundo`, `fondo_radial`). `fondo_noche` es el oscuro por defecto y el negro plano queda para slides puntuales de impacto o legibilidad. Nada de rojo puro en superficies grandes. Portada y CTA pueden tener fondos distintos. El resplandor rojo sobre azul se evalúa según la tonalidad. Reglas de orden: roles de superficie, una alineación, máximo 4–5 formatos. La vista previa muestra 3 versiones de paleta (`comparar_versiones`). Ejemplo en `ejemplos/vinos_3_paletas.py`.
 
 - **v3 (sept. 2026)**: la skill pasa a ser una biblioteca de formatos (familia A Foco y familia B Editorial) con criterio propio para elegir y mezclar según el tema, rubro y nicho. Se suman Playfair Display Italic e Instrument Serif Italic como tipografías de acento, la descarga opcional de una fuente temática, los fondos negro con grano, resplandor rojo y papel, las funciones `linea_mixta`, `boton_flecha`, `logo_centrado` y `vista_previa`, y el flujo obligatorio de vista previa → "confirmo" → entrega. Ejemplos en `ejemplos/`.
 - **v2 (sept. 2026)**: Inter reemplaza a League Gothic y Montserrat. Fondo azul noche con foco rotativo, recuadro destacado, tachado a mano, secuencia con flecha, checklist claro, contador y CTA "Comenta PALABRA".
