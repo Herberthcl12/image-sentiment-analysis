@@ -623,5 +623,153 @@ def comparar_versiones(hojas, nombres, salida):
     comp.save(salida)
     return salida
 
+# =====================================================================
+#  V3.2: FORMATOS C (notas, tarjetas, comparación con foto, CTA guarda)
+#        + fondos sin fotos (nubes y manchas difuminadas)
+# =====================================================================
+
+def fondo_nubes(cielo_arriba=(110, 162, 220), cielo_abajo=(200, 225, 248), densidad=9, semilla=7):
+    """Cielo con nubes difuminadas, 100 % procedural (no necesita descargar fotos).
+    Úsalo cuando no haya foto disponible o no se pueda descargar."""
+    import random as _r
+    _r.seed(semilla)
+    yy = np.linspace(0, 1, ALTO)[:, None, None]
+    a, b = np.array(cielo_arriba, float), np.array(cielo_abajo, float)
+    cielo = np.repeat(a + (b - a) * yy, ANCHO, axis=1)
+    nubes = np.zeros((ALTO, ANCHO), float)     # máscara de densidad de nube (0-1)
+    sombra = np.zeros((ALTO, ANCHO), float)
+    for _ in range(densidad):
+        m = Image.new("L", (ANCHO, ALTO), 0)
+        sm = Image.new("L", (ANCHO, ALTO), 0)
+        d, ds = ImageDraw.Draw(m), ImageDraw.Draw(sm)
+        cx_, cy_ = _r.randint(-150, ANCHO + 150), _r.randint(-80, ALTO + 80)
+        for _ in range(_r.randint(6, 10)):
+            rx, ry = _r.randint(120, 280), _r.randint(70, 150)
+            ox, oy = _r.randint(-240, 240), _r.randint(-70, 50)
+            d.ellipse((cx_ + ox - rx, cy_ + oy - ry, cx_ + ox + rx, cy_ + oy + ry), fill=_r.randint(150, 230))
+        ds.ellipse((cx_ - 300, cy_ + 30, cx_ + 300, cy_ + 150), fill=120)
+        nubes = np.maximum(nubes, np.array(m.filter(ImageFilter.GaussianBlur(_r.randint(38, 60))), float) / 255)
+        sombra = np.maximum(sombra, np.array(sm.filter(ImageFilter.GaussianBlur(60)), float) / 255)
+    sombra = sombra * (1 - nubes)
+    blanco = np.array([255, 255, 255], float)
+    tono_sombra = np.array([150, 176, 208], float)
+    arr = cielo + (tono_sombra - cielo) * (sombra[:, :, None] * 0.35)
+    arr = arr + (blanco - arr) * (nubes[:, :, None] ** 0.8)
+    return _grano(Image.fromarray(np.clip(arr, 0, 255).astype("uint8")), 0.03)
+
+def fondo_manchas(base=(246, 240, 242), colores=((250, 200, 214), (196, 220, 246), (255, 255, 255)), n=6, semilla=3):
+    """Fondo difuminado con manchas suaves de color (tipo luz de estudio / bruma).
+    Alternativa sin fotos para portadas y CTA claros."""
+    import random as _r
+    _r.seed(semilla)
+    arr = np.ones((ALTO, ANCHO, 3), float) * np.array(base, float)
+    for i in range(n):
+        c = np.array(colores[i % len(colores)], float)
+        m = Image.new("L", (ANCHO, ALTO), 0)
+        r = _r.randint(260, 480)
+        x, y = _r.randint(0, ANCHO), _r.randint(0, ALTO)
+        ImageDraw.Draw(m).ellipse((x - r, y - r, x + r, y + r), fill=210)
+        k = np.array(m.filter(ImageFilter.GaussianBlur(130)), float)[:, :, None] / 255
+        arr = arr + (c - arr) * k
+    return _grano(Image.fromarray(np.clip(arr, 0, 255).astype("uint8")), 0.04)
+
+def foto_cover(ruta, w, h, desenfoque=0):
+    """Recorta una foto para llenar w x h (como 'cover' en CSS)."""
+    im = Image.open(ruta).convert("RGB")
+    r = max(w / im.width, h / im.height)
+    im = im.resize((int(im.width * r) + 1, int(im.height * r) + 1), Image.LANCZOS)
+    l, t = (im.width - w) // 2, (im.height - h) // 2
+    im = im.crop((l, t, l + w, t + h))
+    return im.filter(ImageFilter.GaussianBlur(desenfoque)) if desenfoque else im
+
+def pegar_redondeado(img, pieza, x, y, radio=36, sombra=True):
+    """Pega una imagen con esquinas redondeadas y sombra suave."""
+    w, h = pieza.size
+    if sombra:
+        sh = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        ImageDraw.Draw(sh).rounded_rectangle((x + 6, y + 16, x + w + 6, y + h + 16), radius=radio, fill=(6, 19, 35, 70))
+        img.paste(Image.alpha_composite(img.convert("RGBA"), sh.filter(ImageFilter.GaussianBlur(18))).convert("RGB"))
+    m = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(m).rounded_rectangle((0, 0, w, h), radius=radio, fill=255)
+    img.paste(pieza, (x, y), m)
+
+def oscurecer_abajo(foto, desde=0.45, fuerza=200):
+    """Degradado oscuro en la parte baja de una foto, para que el texto encima se lea."""
+    w, h = foto.size
+    g = Image.new("L", (1, h))
+    for yy in range(h):
+        g.putpixel((0, yy), int(max(0, (yy / h - desde) / (1 - desde)) ** 1.2 * fuerza))
+    out = foto.copy()
+    out.paste(Image.new("RGB", foto.size, (10, 10, 18)), (0, 0), g.resize(foto.size))
+    return out
+
+def tarjeta(img, box, color=BLANCO, radio=44, sombra=True):
+    """Tarjeta redondeada con sombra difusa (base de C1, C2 y C5)."""
+    x0, y0, x1, y1 = box
+    if sombra:
+        sh = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        ImageDraw.Draw(sh).rounded_rectangle((x0 + 4, y0 + 18, x1 + 4, y1 + 18), radius=radio, fill=(6, 19, 35, 60))
+        img.paste(Image.alpha_composite(img.convert("RGBA"), sh.filter(ImageFilter.GaussianBlur(22))).convert("RGB"))
+    ImageDraw.Draw(img).rounded_rectangle(box, radius=radio, fill=color)
+
+def tarjeta_desplazada(img, box, color=CREMA, color_sombra=AZUL_NOCHE, offset=40, radio=40):
+    """C1: tarjeta clara con una tarjeta sólida desplazada detrás (efecto nota apilada)."""
+    x0, y0, x1, y1 = box
+    ImageDraw.Draw(img).rounded_rectangle((x0 + offset, y0 + offset, x1 + offset, y1 + offset), radius=radio, fill=color_sombra)
+    tarjeta(img, box, color=color, radio=radio, sombra=False)
+
+def barra_notas(d, box, estilo="notas", color=ROJO):
+    """Barra superior tipo app de notas del iPhone dentro de una tarjeta.
+    estilo='notas' -> '‹ Notas' + 4 íconos circulares (C2); estilo='iconos' -> '‹' + 3 botones grises (C5)."""
+    x0, y0, x1, _ = box
+    if estilo == "notas":
+        d.text((x0 + 45, y0 + 40), "‹ Notas", font=inter(500, 30), fill=color)
+        for i in range(4):
+            c = x1 - 60 - i * 62
+            d.ellipse((c - 18, y0 + 45, c + 18, y0 + 81), outline=color, width=3)
+    else:
+        d.text((x0 + 45, y0 + 30), "‹", font=inter(500, 56), fill=AZUL_NOCHE)
+        for i in range(3):
+            c = x1 - 60 - i * 78
+            d.ellipse((c - 26, y0 + 36, c + 26, y0 + 88), fill="#EEF1F5")
+
+def pastilla(d, x, y, texto, font, bg, fg, pad=(18, 8), centrado=False):
+    """Etiqueta de texto sobre un rectángulo de color (aburre/vende, 'EN EL ASCENSOR', etc.)."""
+    w = d.textlength(texto, font=font)
+    if centrado:
+        x = x - (w + 2 * pad[0]) / 2
+    b = d.textbbox((0, 0), texto, font=font)
+    d.rectangle((x, y, x + w + 2 * pad[0], y + (b[3] - b[1]) + 2 * pad[1] + 8), fill=bg)
+    d.text((x + pad[0], y + pad[1] - b[1] + 4), texto, font=font, fill=fg)
+
+def flor(img, cx_, cy_, r, color, petalos=7, giro=0):
+    """Flor decorativa 'inflada' tipo 3D con luz y sombra (decoración de C2)."""
+    capa = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(capa)
+    col = tuple(int(v) for v in color) + (255,)
+    for i in range(petalos):
+        a = giro + i * 2 * math.pi / petalos
+        px, py = cx_ + math.cos(a) * r * 0.66, cy_ + math.sin(a) * r * 0.66
+        d.ellipse((px - r * 0.34, py - r * 0.34, px + r * 0.34, py + r * 0.34), fill=col)
+    d.ellipse((cx_ - r * 0.5, cy_ - r * 0.5, cx_ + r * 0.5, cy_ + r * 0.5), fill=col)
+    luz = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    ImageDraw.Draw(luz).ellipse((cx_ - r * 0.9, cy_ - r * 0.95, cx_ + r * 0.2, cy_ + r * 0.1), fill=(255, 255, 255, 90))
+    luz = luz.filter(ImageFilter.GaussianBlur(r * 0.25))
+    luz.putalpha(Image.composite(luz.split()[3], Image.new("L", img.size, 0), capa.split()[3]))
+    sombra = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    ImageDraw.Draw(sombra).ellipse((cx_ - r, cy_ - r * 0.7, cx_ + r, cy_ + r * 1.2), fill=(0, 0, 0, 60))
+    base = Image.alpha_composite(img.convert("RGBA"), sombra.filter(ImageFilter.GaussianBlur(r * 0.3)))
+    base = Image.alpha_composite(Image.alpha_composite(base, capa), luz)
+    img.paste(base.convert("RGB"))
+
+def destello(d, x, y, r, color):
+    """Estrella de 8 puntas (acento del CTA 'Guarda este post')."""
+    pts = []
+    for i in range(16):
+        a = i * math.pi / 8
+        rr = r if i % 2 == 0 else r * 0.28
+        pts.append((x + math.cos(a) * rr, y + math.sin(a) * rr))
+    d.polygon(pts, fill=color)
+
 if __name__ == "__main__":
     print("Módulo de utilidades — importar, no ejecutar directo.")

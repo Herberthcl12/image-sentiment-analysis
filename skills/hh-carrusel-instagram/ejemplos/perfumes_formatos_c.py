@@ -1,15 +1,16 @@
-"""Perfumería · prueba de 5 formatos nuevos (C1–C5) + 2 de la skill, en 3 paletas.
+"""EJEMPLO v3.2 (aprobado): formatos C1–C5 + A1/A7 en 3 paletas.
+Perfumería · prueba de 5 formatos nuevos (C1–C5) + 2 de la skill, en 3 paletas.
 1 A1 portada · 2 C3 aburre/vende · 3 C1 mini nota · 4 C2 nota iPhone + flores · 5 C5 notas en cielo · 6 A7 sentencia · 7 C4 CTA guarda
 Fotos: Unsplash (Eve Maier, Olena Bohovyk, Sonny Mauricio, Sally)."""
 import sys, os, glob, math
 import numpy as np
-sys.path.insert(0, "/root/.claude/skills/synced/a83d7b8b-6484-4f1d-b672-5dde2b410928_0fec2520-89fe-4255-ba8e-9c8f4e367f11/hh-carrusel-instagram/scripts")
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "scripts"))
 from generar_slide import *
 from PIL import Image, ImageDraw, ImageFilter
 
-BASE = os.path.dirname(os.path.abspath(__file__))
+BASE = os.getcwd()
 USAR_FOTOS = True   # False -> fondo_nubes() procedural en C2/C5
-FOTOS = os.path.join(BASE, "fotos")
+FOTOS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fotos")
 TOTAL = 7
 
 def cx(d, t, f): return (ANCHO - d.textlength(t, font=f)) / 2

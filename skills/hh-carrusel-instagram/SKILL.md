@@ -1,9 +1,9 @@
 ---
 name: hh-carrusel-instagram
-description: Genera carruseles de Instagram para HH Studio Creativo con una biblioteca de 13 formatos de slide y un sistema de paletas guardadas (vino + noche, crema + azul, rosa + celeste, foco clásico; Inter + serif cursiva; recuadros, tachados, comparaciones, frases fragmentadas) que elige y combina según el tema, rubro y nicho de forma ordenada, con vista previa de 3 versiones de color antes de entregar y CTA obligatorio "Comenta PALABRA". Úsala SIEMPRE que Herberth pida un carrusel, post de varias láminas, o contenido tipo "swipe" para @hh.condireccion o para un cliente de HH, incluso si solo dice "hazme un carrusel sobre X" sin más detalle. También aplícala si pide "el mismo estilo del carrusel de siempre", "un carrusel como los que ya hacemos" o "usa la skill del carrusel". No apliques la paleta de HH a piezas de un cliente salvo que se indique explícitamente que es para HH.
+description: Genera carruseles de Instagram para HH Studio Creativo con una biblioteca de 18 formatos de slide y un sistema de paletas guardadas (vino + noche, crema + azul, rosa + celeste, foco clásico; Inter + serif cursiva; recuadros, tachados, comparaciones, frases fragmentadas) que elige y combina según el tema, rubro y nicho de forma ordenada, con vista previa de 3 versiones de color antes de entregar y CTA obligatorio ("Comenta PALABRA" o "Guarda este post"). Úsala SIEMPRE que Herberth pida un carrusel, post de varias láminas, o contenido tipo "swipe" para @hh.condireccion o para un cliente de HH, incluso si solo dice "hazme un carrusel sobre X" sin más detalle. También aplícala si pide "el mismo estilo del carrusel de siempre", "un carrusel como los que ya hacemos" o "usa la skill del carrusel". No apliques la paleta de HH a piezas de un cliente salvo que se indique explícitamente que es para HH.
 ---
 
-# Carrusel HH Studio Creativo — v3.1 (formatos + paletas)
+# Carrusel HH Studio Creativo — v3.2 (formatos + paletas)
 
 Produce carruseles de Instagram terminados en PNG (1080x1350) para HH Studio Creativo (@hh.condireccion). La skill no es una plantilla: es una **biblioteca de formatos de slide**, un **sistema de paletas** y un **criterio para elegirlos** según el tema. Los formatos definen la composición de cada slide y las paletas definen los colores, tonos y sombras. Son independientes: cualquier formato (incluidos los que Herberth mande en el futuro) se puede vestir con cualquier paleta guardada. Cada carrusel debe verse distinto al anterior sin dejar de ser reconocible como HH.
 
@@ -57,7 +57,7 @@ El texto nunca va sobre el punto más brillante de un foco o resplandor. Las reg
 ## Sistema de paletas
 
 Cada paleta define **roles de superficie**, no slides fijos:
-- **Tapa**: la superficie pensada para la portada. El **CTA no tiene que repetirla**: puede usar la tapa, la superficie de desarrollo, el negro plano u otra superficie de la paleta. Decide según cómo termine el carrusel y qué haga que el CTA destaque.
+- **Tapa**: la superficie pensada para la portada. **El CTA va, por defecto, en una superficie distinta a la portada** (a Herberth no le gusta que abran y cierren con el mismo fondo exacto): usa la de desarrollo, el negro plano, `fondo_manchas()`, `fondo_nubes()` o la tapa de otra paleta que combine. Repetir la tapa solo si lo justificas.
 - **Desarrollo**: todos los slides intermedios.
 - **Contraste** (opcional, 1 slide): `fondo_papel()`, común a todas las paletas, para listas densas.
 
@@ -73,6 +73,7 @@ Además define los colores de texto de cada superficie, el recuadro destacado y 
 Cómo usarlas:
 - Dibuja cada formato leyendo los colores de la paleta (`P["tapa_txt"]`, `P["dev_estilo"]["txt"]`, `P["caja"]`, etc.) en vez de fijar colores a mano. Así el mismo guion sale en cualquier paleta con solo cambiar la clave. Ver `ejemplos/vinos_3_paletas.py`.
 - Para la vista previa, elige 3 paletas que tengan sentido para el tema: la que recomiendas y dos alternativas con otro carácter. Pueden compartir superficies (por ejemplo, dos con desarrollo noche).
+- **Recuadro destacado sobre fondos claros o pastel**: usa azul noche con texto blanco (o rosado con texto azul noche), **no rojo**. El recuadro rojo queda para fondos oscuros o medios.
 - Puedes crear paletas nuevas con `fondo_radial()` combinando colores de HH (azul noche, rojo profundo, blanco, crema, rosado, celeste). Con el resplandor rojo sobre azul noche, cuida la tonalidad: el rojo saturado brillando sobre azul se vio duro en portada y CTA. Un resplandor más profundo (vino o burdeo) o sobre otra base puede funcionar; evalúalo caso a caso y, si dudas, muéstralo como una de las 3 versiones. Si una combinación nueva funciona y Herberth la aprueba, agrégala a `PALETAS` con nombre.
 - Cuando Herberth mande estructuras nuevas, adáptalas a estas paletas: las paletas se mantienen y la estructura cambia.
 
@@ -124,6 +125,23 @@ Ejemplo completo: `ejemplos/formatos_mixtos_ideas.py`. Donde el ejemplo usa `fon
 
 Estos formatos son un punto de partida, no moldes cerrados: puedes crear variantes con la misma lógica (por ejemplo, B4 con "Antes / Ahora", o B2 con precios en vez de cantidades). Si una variante funciona y Herberth la aprueba, agrégala a la biblioteca con un ID nuevo.
 
+### Familia C: Notas y tarjetas (referencias aprobadas en sept. 2026)
+Ejemplo completo: `ejemplos/perfumes_formatos_c.py`. Funciones: `tarjeta`, `tarjeta_desplazada`, `barra_notas`, `pastilla`, `foto_cover`, `pegar_redondeado`, `oscurecer_abajo`, `flor`, `destello`.
+
+| ID | Formato | Composición | Sirve para |
+|---|---|---|---|
+| **C1** | Mini nota apilada | Superficie de la paleta + `tarjeta_desplazada` (tarjeta crema con una sólida desplazada detrás), título "Palabra Inter 900 + *palabra serif roja*", regla, 3–5 ítems numerados y pie "1–4 \| TEMA" | Listas cortas de plantillas, hooks o frases listas para usar |
+| **C2** | Nota iPhone con "Por qué funciona" | Fondo de cielo (foto o `fondo_nubes`) + `tarjeta` blanca con `barra_notas(estilo="notas")`, título serif rojo centrado, 2 ítems con frase en negrita + "**Por qué funciona:** explicación", decorada con 1–2 `flor` (roja y rosada) | Explicar el porqué de cada ejemplo (educativo y cercano) |
+| **C3** | Comparación con foto "aburre / vende" | Dos etiquetas `pastilla` arriba, la **misma foto** dos veces con `pegar_redondeado`; en la izquierda, el texto genérico chico; en la derecha, `oscurecer_abajo` + frase serif blanca + pastilla roja; abajo "Guárdalo y compártelo" | Mostrar el antes y el después de un copy, un precio, una foto o un anuncio |
+| **C4** | CTA "Guarda este post" | "Guarda este" + **post** en recuadro + `destello` + "y comenta [algo simple] para [la parte II / etc.]" + foto en marco redondeado | Cierre para contenido liviano, **sin entregable** (ver CTA) |
+| **C5** | Notas iPhone en lista | Fondo de cielo + logo centrado arriba + `tarjeta` blanca con `barra_notas(estilo="iconos")`, un subtítulo rojo y 4–6 frases numeradas + fila de íconos abajo | Listas de frases o ideas para copiar |
+
+## Fotos y fondos sin fotos
+
+- **Fotos reales**: lo mejor es material de Herberth o del cliente (`gradar_foto_hh` para portadas o `foto_cover` + `pegar_redondeado` para marcos).
+- **Unsplash** (conector disponible) sirve para fotos de apoyo. En este entorno, la descarga en alta suele estar bloqueada; la versión chica (400 px) se baja desde `https://s3.us-west-2.amazonaws.com/images.unsplash.com/small/<id-de-la-foto>`. Úsala **solo dentro de marcos**, nunca a pantalla completa (salvo cielos o texturas difusas). Evita fotos con **logos o marcas visibles** y dile a Herberth que son de Unsplash.
+- **Sin fotos** (sin red, sin créditos o sin material): usa `fondo_nubes()` (cielo con nubes difuminadas y sombra) o `fondo_manchas()` (bruma de color difuminada). Son 100 % procedurales y combinan con las paletas claras.
+
 ## Cómo elegir (criterio propio)
 
 Antes de decidir, responde internamente estas preguntas:
@@ -131,7 +149,9 @@ Antes de decidir, responde internamente estas preguntas:
 1. **¿Qué tipo de contenido es?**
    - Educativo o paso a paso → A5, A6, A4 (Foco) o B3.
    - Opinión, mito o polémica → A2, B5, B4.
-   - Valor descargable (ideas, recursos, plantillas) → B2 + B3.
+   - Valor descargable (ideas, recursos, plantillas) → B2 + B3, C1 o C5.
+   - Ejemplos con explicación ("por qué funciona") → C2.
+   - Antes y después de un mensaje o una pieza → C3 o B4.
    - Diagnóstico del lector ("¿te pasa esto?") → A3, A4.
    - Tendencia o novedad → B1.
    - Venta de un servicio de HH → A1, A3, A6 y cierre A7 + A8.
@@ -153,11 +173,16 @@ Reglas de mezcla:
 
 En la vista previa, indica siempre qué ID usa cada slide (por ejemplo: "1 B1 · 2 B2 · 3 A3 · …"), así Herberth puede pedir cambios por ID.
 
-## CTA obligatorio: "Comenta PALABRA"
+## CTA (obligatorio, siempre el último slide)
 
-- Siempre es el último slide.
+Hay dos tipos. Elige según el contenido:
+- **"Comenta PALABRA"** (A8): cuando hay un entregable que regalar (checklist, guion, plantilla, PDF). Es el cierre por defecto para contenido de alto valor.
+- **"Guarda este post"** (C4): cuando el contenido es más liviano y no hace falta entregar nada. Se puede sumar una acción simple ("y comenta tu favorito para la parte II").
+
+### Detalle de "Comenta PALABRA"
+
 - "Comenta" + la PALABRA en `etiqueta_cta` (recuadro rojo inclinado) + la promesa en `texto_mixto`: **"y te mando [entregable concreto] [para qué] [en X tiempo / listo para X]"**, con el tiempo o beneficio en rojo.
-- Puede ir sobre cualquier familia de fondo (Foco, Negro o Resplandor) y alineado a la izquierda o centrado, según el resto del carrusel.
+- Puede ir sobre cualquier superficie, preferentemente **distinta a la de la portada**, alineado a la izquierda o centrado según el resto del carrusel.
 - Una sola palabra, en mayúsculas, ligada al tema.
 - Revisa los saltos de línea a mano: sin palabras solas en la última línea y sin espacio antes de ":".
 - En la respuesta final, avísale a Herberth qué entregable prometió el CTA, para que lo tenga listo antes de publicar, y ofrécete a crearlo.
@@ -168,6 +193,7 @@ En la vista previa, indica siempre qué ID usa cada slide (por ejemplo: "1 B1 ·
 - **Gráficos**: `caja_destacada`, `trazo_mano`, `flecha_curva`, `tarjeta_check`, `etiqueta_cta`, `boton_flecha`.
 - **Fondos**: `fondo_noche`, `fondo_vino`, `fondo_crema`, `fondo_rosa_celeste`, `fondo_celeste`, `fondo_rojo_profundo`, `fondo_radial`, `fondo_hh`, `fondo_papel`, `fondo_claro_puntos`, `fondo_resplandor`, `fondo_negro` (solo en slides muy densos) y `gradar_foto_hh`.
 - **Paletas**: `PALETAS[clave]` y `contador_color(img, n, total, color)`.
+- **Familia C y fotos**: `tarjeta`, `tarjeta_desplazada`, `barra_notas`, `pastilla`, `flor`, `destello`, `foto_cover`, `pegar_redondeado`, `oscurecer_abajo`, `fondo_nubes`, `fondo_manchas`.
 - **Marca**: `logo_esquina`, `logo_centrado`, `pegar_logo` (variantes blanco, azul y negro).
 - **Meta**: `contador(img, n, total)`, `vista_previa(rutas, salida)` y `comparar_versiones(hojas, nombres, salida)`.
 
@@ -205,6 +231,8 @@ Revisa la hoja de miniaturas y cualquier slide dudoso a tamaño completo:
 - No prometas publicar en Instagram: Herberth sube los archivos.
 
 ## Registro de cambios
+
+- **v3.2 (sept. 2026)**: familia C (C1 mini nota apilada, C2 nota iPhone con "por qué funciona", C3 comparación con foto aburre/vende, C4 CTA "Guarda este post", C5 notas iPhone en lista). CTA alternativo "Guarda" para contenido liviano. El CTA va por defecto en una superficie distinta a la portada. Recuadro destacado en azul noche (no rojo) sobre fondos claros. Fondos sin fotos: `fondo_nubes` y `fondo_manchas`. Pautas para fotos de Unsplash. Ejemplo en `ejemplos/perfumes_formatos_c.py`.
 
 - **v3.1 (sept. 2026)**: sistema de paletas separado de los formatos (`PALETAS`: vino_noche, crema_azul, rosa_celeste, foco_clasico) con superficies de degradado y sombra (`fondo_noche`, `fondo_vino`, `fondo_crema`, `fondo_rosa_celeste`, `fondo_celeste`, `fondo_rojo_profundo`, `fondo_radial`). `fondo_noche` es el oscuro por defecto y el negro plano queda para slides puntuales de impacto o legibilidad. Nada de rojo puro en superficies grandes. Portada y CTA pueden tener fondos distintos. El resplandor rojo sobre azul se evalúa según la tonalidad. Reglas de orden: roles de superficie, una alineación, máximo 4–5 formatos. La vista previa muestra 3 versiones de paleta (`comparar_versiones`). Ejemplo en `ejemplos/vinos_3_paletas.py`.
 
